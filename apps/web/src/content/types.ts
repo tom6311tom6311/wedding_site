@@ -1,9 +1,3 @@
-export type NavigationItem = {
-  label: string;
-  href: string;
-  featured?: boolean;
-};
-
 export type HeroAction = {
   label: string;
   href: string;
@@ -15,10 +9,13 @@ export type WeddingContent = {
     title: string;
     description: string;
   };
-  navigation: NavigationItem[];
   hero: {
     eyebrow: string;
-    title: string;
+    coupleNames: {
+      groom: string;
+      bride: string;
+      symbol: string;
+    };
     dateLine: string;
     message: string;
     image: {
@@ -31,6 +28,18 @@ export type WeddingContent = {
     eyebrow: string;
     title: string;
     body: string[];
+  };
+  couple: {
+    eyebrow: string;
+    title: string;
+    people: Array<{
+      role: string;
+      name: string;
+      image: {
+        src: string;
+        alt: string;
+      };
+    }>;
   };
   story: {
     eyebrow: string;
