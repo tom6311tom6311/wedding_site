@@ -16,7 +16,17 @@ export function CoupleSection({ couple }: CoupleSectionProps) {
                 <h3>{person.name}</h3>
               </div>
               <figure className="couple-portrait">
-                <img src={person.image.src} alt={person.image.alt} />
+                <img
+                  src={person.image.src}
+                  alt={person.image.alt}
+                  style={{
+                    objectPosition: person.image.objectPosition,
+                    transform:
+                      person.image.offsetY || person.image.scale
+                        ? `translateY(${person.image.offsetY ?? "0"}) scale(${person.image.scale ?? 1})`
+                        : undefined,
+                  }}
+                />
               </figure>
             </article>
           ))}

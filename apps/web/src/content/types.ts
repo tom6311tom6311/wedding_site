@@ -45,6 +45,9 @@ export type WeddingContent = {
       image: {
         src: string;
         alt: string;
+        objectPosition?: string;
+        scale?: number;
+        offsetY?: string;
       };
     }>;
   };
