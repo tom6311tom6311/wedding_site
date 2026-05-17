@@ -10,6 +10,14 @@ export type HeroImage = {
   objectPosition?: string;
 };
 
+export type ImageAsset = {
+  src: string;
+  alt: string;
+  objectPosition?: string;
+  scale?: number;
+  offsetY?: string;
+};
+
 export type WeddingContent = {
   metadata: {
     title: string;
@@ -49,12 +57,21 @@ export type WeddingContent = {
     people: Array<{
       role: string;
       name: string;
-      image: {
-        src: string;
-        alt: string;
-        objectPosition?: string;
-        scale?: number;
-        offsetY?: string;
+      introduction?: string;
+      image: ImageAsset;
+      parents?: {
+        title: string;
+        image: ImageAsset;
+        dad: {
+          label: string;
+          name: string;
+          introduction: string;
+        };
+        mom: {
+          label: string;
+          name: string;
+          introduction: string;
+        };
       };
     }>;
   };

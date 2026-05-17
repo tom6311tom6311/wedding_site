@@ -57,6 +57,24 @@
         "image": {
           "src": "/images/hero-placeholder.png",
           "alt": "Portrait placeholder for the bride"
+        },
+        "introduction": "Loves quiet mornings, handwritten notes, and gathering the people she loves around one table.",
+        "parents": {
+          "title": "Bride's parents",
+          "image": {
+            "src": "/images/hero-placeholder.png",
+            "alt": "Portrait placeholder for the bride's parents"
+          },
+          "dad": {
+            "label": "Dad",
+            "name": "Bride's Father",
+            "introduction": "A warm welcome from the bride's father."
+          },
+          "mom": {
+            "label": "Mom",
+            "name": "Bride's Mother",
+            "introduction": "A warm welcome from the bride's mother."
+          }
         }
       },
       {
@@ -65,6 +83,24 @@
         "image": {
           "src": "/images/hero-placeholder.png",
           "alt": "Portrait placeholder for the groom"
+        },
+        "introduction": "Brings steady warmth, a ready laugh, and a habit of making every ordinary day feel cared for.",
+        "parents": {
+          "title": "Groom's parents",
+          "image": {
+            "src": "/images/hero-placeholder.png",
+            "alt": "Portrait placeholder for the groom's parents"
+          },
+          "dad": {
+            "label": "Dad",
+            "name": "Groom's Father",
+            "introduction": "A warm welcome from the groom's father."
+          },
+          "mom": {
+            "label": "Mom",
+            "name": "Groom's Mother",
+            "introduction": "A warm welcome from the groom's mother."
+          }
         }
       }
     ]
