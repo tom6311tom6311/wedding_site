@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { BackgroundMusic } from "./components/BackgroundMusic";
 import { InvitationSections } from "./components/InvitationSections";
 import { weddingContent } from "./content";
 import "./styles.css";
@@ -18,6 +19,7 @@ function App() {
   return (
     <main className="site-shell">
       <InvitationSections content={weddingContent} />
+      <BackgroundMusic music={weddingContent.music} />
     </main>
   );
 }

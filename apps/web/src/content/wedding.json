@@ -3,6 +3,13 @@
     "title": "Emma & Noah Wedding",
     "description": "Wedding invitation website for Emma and Noah."
   },
+  "music": {
+    "enabled": false,
+    "src": "/audio/wedding-theme.mp3",
+    "title": "Original instrumental wedding theme",
+    "loop": true,
+    "volume": 0.42
+  },
   "hero": {
     "eyebrow": "Together with their families",
     "coupleNames": {

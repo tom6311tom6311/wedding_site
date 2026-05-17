@@ -15,6 +15,13 @@ export type WeddingContent = {
     title: string;
     description: string;
   };
+  music?: {
+    enabled: boolean;
+    src: string;
+    title: string;
+    loop?: boolean;
+    volume?: number;
+  };
   hero: {
     eyebrow: string;
     coupleNames: {
