@@ -1,0 +1,170 @@
+{
+  "metadata": {
+    "title": "Emma & Noah Wedding",
+    "description": "Wedding invitation website for Emma and Noah."
+  },
+  "navigation": [
+    {
+      "label": "Welcome",
+      "href": "#welcome"
+    },
+    {
+      "label": "Story",
+      "href": "#story"
+    },
+    {
+      "label": "Details",
+      "href": "#details"
+    },
+    {
+      "label": "RSVP",
+      "href": "#rsvp",
+      "featured": true
+    }
+  ],
+  "hero": {
+    "eyebrow": "Together with their families",
+    "title": "Emma & Noah",
+    "dateLine": "October 18, 2026 · Taipei",
+    "message": "We are getting married, and it would mean the world to celebrate this day with the people we love most.",
+    "image": {
+      "src": "/images/hero-placeholder.png",
+      "alt": "A romantic garden wedding scene at golden hour"
+    },
+    "actions": [
+      {
+        "label": "RSVP",
+        "href": "#rsvp",
+        "variant": "primary"
+      },
+      {
+        "label": "View Venue",
+        "href": "#venue",
+        "variant": "secondary"
+      }
+    ]
+  },
+  "welcome": {
+    "eyebrow": "Welcome",
+    "title": "We cannot wait to celebrate with you.",
+    "body": [
+      "This site will hold everything guests need for the wedding day, from our story and schedule to venue details, travel notes, and RSVP.",
+      "For now, the content is intentionally easy to replace. Update this JSON file whenever the date, venue, photos, or copy are ready."
+    ]
+  },
+  "story": {
+    "eyebrow": "Our Story",
+    "title": "A few chapters before the big day.",
+    "milestones": [
+      {
+        "year": "2019",
+        "title": "First hello",
+        "body": "We met through friends and quickly found ourselves looking for excuses to spend more time together."
+      },
+      {
+        "year": "2022",
+        "title": "The adventure grew",
+        "body": "Weekend trips, favorite restaurants, family gatherings, and quiet everyday routines became our shared life."
+      },
+      {
+        "year": "2026",
+        "title": "The next promise",
+        "body": "Now we are gathering everyone we love to celebrate the beginning of our marriage."
+      }
+    ]
+  },
+  "venue": {
+    "eyebrow": "Venue",
+    "title": "Ceremony and celebration",
+    "name": "The Garden House",
+    "address": "No. 100, Love Road, Taipei City",
+    "mapUrl": "https://maps.google.com",
+    "notes": [
+      "Ceremony and reception will take place at the same venue.",
+      "Please arrive 20 minutes before the ceremony begins.",
+      "Formal or semi-formal attire is welcome."
+    ]
+  },
+  "travel": {
+    "eyebrow": "Traffic Info",
+    "title": "Getting there",
+    "items": [
+      {
+        "title": "By MRT",
+        "body": "Take the MRT to the nearest station, then use a short taxi ride or venue shuttle."
+      },
+      {
+        "title": "By car",
+        "body": "Limited parking will be available near the venue. Carpooling is encouraged."
+      },
+      {
+        "title": "Taxi or rideshare",
+        "body": "Use the venue name and address above. A drop-off area will be available near the entrance."
+      }
+    ]
+  },
+  "schedule": {
+    "eyebrow": "Schedule",
+    "title": "Wedding day flow",
+    "events": [
+      {
+        "time": "15:30",
+        "title": "Guest arrival",
+        "body": "Welcome drinks and seating."
+      },
+      {
+        "time": "16:00",
+        "title": "Ceremony",
+        "body": "We exchange vows with family and friends."
+      },
+      {
+        "time": "17:00",
+        "title": "Photos and cocktails",
+        "body": "Group photos, snacks, and drinks."
+      },
+      {
+        "time": "18:30",
+        "title": "Dinner reception",
+        "body": "Dinner, speeches, and celebration."
+      }
+    ]
+  },
+  "rsvp": {
+    "eyebrow": "RSVP",
+    "title": "Let us know if you can make it.",
+    "body": "The form is ready visually. We can connect it to a backend or external form service in the next step.",
+    "submitLabel": "Send RSVP",
+    "fields": [
+      {
+        "name": "name",
+        "label": "Your name",
+        "type": "text",
+        "placeholder": "Full name"
+      },
+      {
+        "name": "email",
+        "label": "Email",
+        "type": "email",
+        "placeholder": "name@example.com"
+      },
+      {
+        "name": "attendance",
+        "label": "Will you attend?",
+        "type": "select",
+        "options": ["Yes, I will be there", "Sorry, I cannot make it"]
+      },
+      {
+        "name": "guests",
+        "label": "Number of guests",
+        "type": "number",
+        "placeholder": "1"
+      },
+      {
+        "name": "message",
+        "label": "Message",
+        "type": "textarea",
+        "placeholder": "Leave us a note"
+      }
+    ]
+  }
+}
