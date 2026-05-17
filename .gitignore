@@ -7,3 +7,4 @@ vite.config.d.ts
 .DS_Store
 apps/web/src/content/wedding.local.json
 apps/web/public/images/*.local.*
+apps/web/public/images/*.local/

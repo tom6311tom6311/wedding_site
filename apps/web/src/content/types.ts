@@ -4,6 +4,12 @@ export type HeroAction = {
   variant: "primary" | "secondary";
 };
 
+export type HeroImage = {
+  src: string;
+  alt: string;
+  objectPosition?: string;
+};
+
 export type WeddingContent = {
   metadata: {
     title: string;
@@ -18,9 +24,10 @@ export type WeddingContent = {
     };
     dateLine: string;
     message: string;
-    image: {
-      src: string;
-      alt: string;
+    image: HeroImage;
+    images?: HeroImage[];
+    carousel: {
+      intervalMs: number;
     };
     actions: HeroAction[];
   };

@@ -16,6 +16,9 @@
       "src": "/images/hero-placeholder.png",
       "alt": "A romantic garden wedding scene at golden hour"
     },
+    "carousel": {
+      "intervalMs": 5200
+    },
     "actions": [
       {
         "label": "RSVP",

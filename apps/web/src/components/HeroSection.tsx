@@ -1,13 +1,41 @@
+import { useEffect, useState } from "react";
 import type { WeddingContent } from "../content/types";
+import { ImageCarousel } from "./presentational/ImageCarousel";
 
 type HeroProps = {
   hero: WeddingContent["hero"];
 };
 
 export function HeroSection({ hero }: HeroProps) {
+  const slides = hero.images && hero.images.length > 0 ? hero.images : [hero.image];
+  const carouselIntervalMs = hero.carousel.intervalMs;
+  const [activeSlide, setActiveSlide] = useState(0);
+
+  useEffect(() => {
+    if (slides.length <= 1) {
+      return;
+    }
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    if (reduceMotion.matches) {
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      setActiveSlide((current) => (current + 1) % slides.length);
+    }, carouselIntervalMs);
+
+    return () => window.clearInterval(interval);
+  }, [carouselIntervalMs, slides.length]);
+
   return (
     <section className="hero" aria-labelledby="hero-title">
-      <img className="hero__image" src={hero.image.src} alt={hero.image.alt} />
+      <ImageCarousel
+        activeSlide={activeSlide}
+        images={slides}
+        onSelectSlide={setActiveSlide}
+      />
       <div className="hero__overlay" />
 
       <div className="hero__content">
@@ -33,6 +61,7 @@ export function HeroSection({ hero }: HeroProps) {
           ))}
         </div>
       </div>
+
     </section>
   );
 }
