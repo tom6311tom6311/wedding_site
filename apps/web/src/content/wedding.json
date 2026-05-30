@@ -127,21 +127,16 @@
     ]
   },
   "venue": {
-    "eyebrow": "Venue",
+    "eyebrow": "Venue and travel",
     "title": "Ceremony and celebration",
-    "name": "The Garden House",
     "address": "No. 100, Love Road, Taipei City",
     "mapUrl": "https://maps.google.com",
     "notes": [
       "Ceremony and reception will take place at the same venue.",
       "Please arrive 20 minutes before the ceremony begins.",
       "Formal or semi-formal attire is welcome."
-    ]
-  },
-  "travel": {
-    "eyebrow": "Traffic Info",
-    "title": "Getting there",
-    "items": [
+    ],
+    "directions": [
       {
         "title": "By MRT",
         "body": "Take the MRT to the nearest station, then use a short taxi ride or venue shuttle."

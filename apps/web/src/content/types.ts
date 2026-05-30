@@ -87,15 +87,10 @@ export type WeddingContent = {
   venue: {
     eyebrow: string;
     title: string;
-    name: string;
     address: string;
     mapUrl: string;
     notes: string[];
-  };
-  travel: {
-    eyebrow: string;
-    title: string;
-    items: Array<{
+    directions: Array<{
       title: string;
       body: string;
     }>;
@@ -107,6 +102,11 @@ export type WeddingContent = {
       time: string;
       title: string;
       body: string;
+      markerX?: string;
+      images?: Array<{
+        src: string;
+        alt: string;
+      }>;
     }>;
   };
   rsvp: {

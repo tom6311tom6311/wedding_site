@@ -18,7 +18,7 @@ export function InvitationSections({ content }: InvitationSectionsProps) {
       <WelcomeSection welcome={content.welcome} />
       <CoupleSection couple={content.couple} />
       <StorySection story={content.story} />
-      <DetailsSection venue={content.venue} travel={content.travel} />
+      <DetailsSection venue={content.venue} />
       <ScheduleSection schedule={content.schedule} />
       <RsvpSection rsvp={content.rsvp} />
     </>

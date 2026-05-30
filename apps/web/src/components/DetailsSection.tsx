@@ -2,39 +2,52 @@ import type { WeddingContent } from "../content/types";
 
 type DetailsSectionProps = {
   venue: WeddingContent["venue"];
-  travel: WeddingContent["travel"];
 };
 
-export function DetailsSection({ venue, travel }: DetailsSectionProps) {
+export function DetailsSection({ venue }: DetailsSectionProps) {
+  const mapQuery = encodeURIComponent(`${venue.title} ${venue.address}`);
+  const mapEmbedUrl = `https://www.google.com/maps?q=${mapQuery}&output=embed`;
+
   return (
     <section className="page-section details-section" id="details">
       <div className="section-inner details-grid">
-        <article className="detail-panel">
-          <p className="section-eyebrow">{venue.eyebrow}</p>
-          <h2>{venue.title}</h2>
-          <h3>{venue.name}</h3>
-          <p>{venue.address}</p>
-          <ul>
-            {venue.notes.map((note) => (
-              <li key={note}>{note}</li>
-            ))}
-          </ul>
-          <a className="text-link" href={venue.mapUrl}>
-            Open Map
-          </a>
-        </article>
+        <article className="detail-panel details-copy">
+          <div>
+            <p className="section-eyebrow">{venue.eyebrow}</p>
+            <h2>{venue.title}</h2>
+            <p>{venue.address}</p>
+            <ul>
+              {venue.notes.map((note) => (
+                <li key={note}>{note}</li>
+              ))}
+            </ul>
+          </div>
 
-        <article className="detail-panel">
-          <p className="section-eyebrow">{travel.eyebrow}</p>
-          <h2>{travel.title}</h2>
-          <div className="travel-list">
-            {travel.items.map((item) => (
+          <div className="directions-list">
+            {venue.directions.map((item) => (
               <div key={item.title}>
                 <h3>{item.title}</h3>
                 <p>{item.body}</p>
               </div>
             ))}
           </div>
+        </article>
+
+        <article className="detail-map-panel" aria-label={`${venue.title} map`}>
+          <iframe
+            src={mapEmbedUrl}
+            title={`${venue.title} map`}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+          <a
+            className="detail-map-link"
+            href={venue.mapUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            開啟地圖
+          </a>
         </article>
       </div>
     </section>
