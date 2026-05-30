@@ -37,6 +37,7 @@ export function HeroSection({ hero }: HeroProps) {
         onSelectSlide={setActiveSlide}
       />
       <div className="hero__overlay" />
+      <HeroDecorations />
 
       <div className="hero__content">
         {hero.eyebrow ? <p className="hero__eyebrow">{hero.eyebrow}</p> : null}
@@ -63,5 +64,24 @@ export function HeroSection({ hero }: HeroProps) {
       </div>
 
     </section>
+  );
+}
+
+function HeroDecorations() {
+  return (
+    <>
+      <img
+        className="hero__decoration hero__decoration--top"
+        src="/images/hero-floral-top.png"
+        alt=""
+        aria-hidden="true"
+      />
+      <img
+        className="hero__decoration hero__decoration--bouquet"
+        src="/images/hero-bouquet.png"
+        alt=""
+        aria-hidden="true"
+      />
+    </>
   );
 }
