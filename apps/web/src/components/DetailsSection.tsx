@@ -5,50 +5,55 @@ type DetailsSectionProps = {
 };
 
 export function DetailsSection({ venue }: DetailsSectionProps) {
-  const mapQuery = encodeURIComponent(`${venue.title} ${venue.address}`);
+  const mapQuery = encodeURIComponent(`${venue.name} ${venue.address}`);
   const mapEmbedUrl = `https://www.google.com/maps?q=${mapQuery}&output=embed`;
 
   return (
     <section className="page-section details-section" id="details">
-      <div className="section-inner details-grid">
-        <article className="detail-panel details-copy">
-          <div>
-            <p className="section-eyebrow">{venue.eyebrow}</p>
-            <h2>{venue.title}</h2>
-            <p>{venue.address}</p>
-            <ul>
-              {venue.notes.map((note) => (
-                <li key={note}>{note}</li>
+      <div className="section-inner details-inner">
+        <div className="section-heading details-heading">
+          <h2>{venue.title}</h2>
+        </div>
+
+        <div className="details-grid">
+          <article className="detail-panel details-copy">
+            <div>
+              <h3>{venue.name}</h3>
+              <p>{venue.address}</p>
+              <ul>
+                {venue.notes.map((note) => (
+                  <li key={note}>{note}</li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="directions-list">
+              {venue.directions.map((item) => (
+                <div key={item.title}>
+                  <h3>{item.title}</h3>
+                  <p>{item.body}</p>
+                </div>
               ))}
-            </ul>
-          </div>
+            </div>
+          </article>
 
-          <div className="directions-list">
-            {venue.directions.map((item) => (
-              <div key={item.title}>
-                <h3>{item.title}</h3>
-                <p>{item.body}</p>
-              </div>
-            ))}
-          </div>
-        </article>
-
-        <article className="detail-map-panel" aria-label={`${venue.title} map`}>
-          <iframe
-            src={mapEmbedUrl}
-            title={`${venue.title} map`}
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
-          <a
-            className="detail-map-link"
-            href={venue.mapUrl}
-            target="_blank"
-            rel="noreferrer"
-          >
-            開啟地圖
-          </a>
-        </article>
+          <article className="detail-map-panel" aria-label={`${venue.name} map`}>
+            <iframe
+              src={mapEmbedUrl}
+              title={`${venue.name} map`}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+            <a
+              className="detail-map-link"
+              href={venue.mapUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              開啟地圖
+            </a>
+          </article>
+        </div>
       </div>
     </section>
   );

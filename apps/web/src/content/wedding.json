@@ -127,8 +127,8 @@
     ]
   },
   "venue": {
-    "eyebrow": "Venue and travel",
-    "title": "Ceremony and celebration",
+    "title": "Venue and travel",
+    "name": "The Garden House",
     "address": "No. 100, Love Road, Taipei City",
     "mapUrl": "https://maps.google.com",
     "notes": [

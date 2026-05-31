@@ -7,40 +7,46 @@ type RsvpSectionProps = {
 export function RsvpSection({ rsvp }: RsvpSectionProps) {
   return (
     <section className="page-section rsvp-section" id="rsvp">
-      <div className="section-inner rsvp-layout">
-        <div>
-          <p className="section-eyebrow">{rsvp.eyebrow}</p>
+      <div className="section-inner rsvp-inner">
+        <div className="section-heading">
           <h2>{rsvp.title}</h2>
-          <p>{rsvp.body}</p>
+          {rsvp.eyebrow ? (
+            <p className="section-subtitle">{rsvp.eyebrow}</p>
+          ) : null}
         </div>
-        <form className="rsvp-form" onSubmit={(event) => event.preventDefault()}>
-          {rsvp.fields.map((field) => (
-            <label key={field.name}>
-              <span>{field.label}</span>
-              {field.type === "textarea" ? (
-                <textarea name={field.name} placeholder={field.placeholder} rows={4} />
-              ) : field.type === "select" ? (
-                <select name={field.name} defaultValue="">
-                  <option value="" disabled>
-                    Select an option
-                  </option>
-                  {field.options?.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
+        <div className="rsvp-layout">
+          <div>
+            <p>{rsvp.body}</p>
+          </div>
+          <form className="rsvp-form" onSubmit={(event) => event.preventDefault()}>
+            {rsvp.fields.map((field) => (
+              <label key={field.name}>
+                <span>{field.label}</span>
+                {field.type === "textarea" ? (
+                  <textarea name={field.name} placeholder={field.placeholder} rows={4} />
+                ) : field.type === "select" ? (
+                  <select name={field.name} defaultValue="">
+                    <option value="" disabled>
+                      請選擇
                     </option>
-                  ))}
-                </select>
-              ) : (
-                <input
-                  name={field.name}
-                  type={field.type}
-                  placeholder={field.placeholder}
-                />
-              )}
-            </label>
-          ))}
-          <button type="submit">{rsvp.submitLabel}</button>
-        </form>
+                    {field.options?.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    name={field.name}
+                    type={field.type}
+                    placeholder={field.placeholder}
+                  />
+                )}
+              </label>
+            ))}
+            <button type="submit">{rsvp.submitLabel}</button>
+          </form>
+        </div>
       </div>
     </section>
   );

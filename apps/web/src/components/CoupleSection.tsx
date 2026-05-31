@@ -20,6 +20,9 @@ export function CoupleSection({ couple }: CoupleSectionProps) {
   return (
     <section className="page-section couple-section" id="couple">
       <div className="section-inner couple-inner">
+        <div className="section-heading couple-heading">
+          <h2>{couple.title}</h2>
+        </div>
         <div className="couple-layout">
           {couple.people.map((person) => (
             <article className="couple-person" key={`${person.role}-${person.name}`}>
@@ -84,7 +87,6 @@ function CroppedImage({ image }: { image: ImageAsset }) {
 
 type ParentIntroProps = {
   parent: {
-    label: string;
     name: string;
     introduction: string;
   };
@@ -93,7 +95,6 @@ type ParentIntroProps = {
 function ParentIntro({ parent }: ParentIntroProps) {
   return (
     <div className="parent-intro">
-      <p className="parent-label">{parent.label}</p>
       <h4>{parent.name}</h4>
       <p>{parent.introduction}</p>
     </div>

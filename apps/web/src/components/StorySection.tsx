@@ -9,7 +9,6 @@ export function StorySection({ story }: StorySectionProps) {
     <section className="page-section story-section" id="story">
       <div className="section-inner">
         <div className="section-heading">
-          <p className="section-eyebrow">{story.eyebrow}</p>
           <h2>{story.title}</h2>
         </div>
         <div className="timeline">

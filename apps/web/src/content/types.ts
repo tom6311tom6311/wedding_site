@@ -50,6 +50,7 @@ export type WeddingContent = {
     eyebrow: string;
     title: string;
     body: string[];
+    illustration?: ImageAsset;
   };
   couple: {
     eyebrow: string;
@@ -85,8 +86,8 @@ export type WeddingContent = {
     }>;
   };
   venue: {
-    eyebrow: string;
     title: string;
+    name: string;
     address: string;
     mapUrl: string;
     notes: string[];
@@ -102,7 +103,6 @@ export type WeddingContent = {
       time: string;
       title: string;
       body: string;
-      markerX?: string;
       images?: Array<{
         src: string;
         alt: string;
