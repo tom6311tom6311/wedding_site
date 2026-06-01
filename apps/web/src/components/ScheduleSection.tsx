@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { WeddingContent } from "../content/types";
+import picnicBike from "../assets/decorations/picnic-bike.png";
 
 type ScheduleImage = NonNullable<
   WeddingContent["schedule"]["events"][number]["images"]
@@ -40,15 +41,22 @@ export function ScheduleSection({ schedule }: ScheduleSectionProps) {
           <h2>{schedule.title}</h2>
         </div>
         <div className="schedule-list">
+          <img
+            className="section-decor section-decor--schedule"
+            src={picnicBike}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+          />
           <svg
             className="schedule-rail"
-            viewBox="0 0 120 720"
+            viewBox="0 0 120 820"
             preserveAspectRatio="none"
             aria-hidden="true"
           >
             <path
               className="schedule-rail__path"
-              d="M60 18 C52 110 68 180 60 278 C52 376 68 454 60 552 C54 620 56 675 60 720"
+              d="M60 18 C35 120 88 196 60 300 C32 414 91 494 60 612 C44 680 50 748 60 820"
             />
           </svg>
 

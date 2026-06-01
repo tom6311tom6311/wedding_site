@@ -49,6 +49,7 @@ export type WeddingContent = {
   welcome: {
     eyebrow: string;
     title: string;
+    featureImage?: ImageAsset;
     body: string[];
     illustration?: ImageAsset;
   };

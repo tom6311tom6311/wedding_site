@@ -1,4 +1,5 @@
 import type { WeddingContent } from "../content/types";
+import lemonDrinks from "../assets/decorations/lemon-drinks.png";
 
 type DetailsSectionProps = {
   venue: WeddingContent["venue"];
@@ -17,6 +18,13 @@ export function DetailsSection({ venue }: DetailsSectionProps) {
 
         <div className="details-grid">
           <article className="detail-panel details-copy">
+            <img
+              className="section-decor section-decor--details"
+              src={lemonDrinks}
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+            />
             <div>
               <h3>{venue.name}</h3>
               <p>{venue.address}</p>

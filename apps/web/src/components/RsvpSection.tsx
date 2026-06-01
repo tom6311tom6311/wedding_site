@@ -1,4 +1,6 @@
 import type { WeddingContent } from "../content/types";
+import mailbox from "../assets/decorations/mailbox.png";
+import ringPillow from "../assets/decorations/ring-pillow.png";
 
 type RsvpSectionProps = {
   rsvp: WeddingContent["rsvp"];
@@ -16,6 +18,20 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
         </div>
         <div className="rsvp-layout">
           <form className="rsvp-form" onSubmit={(event) => event.preventDefault()}>
+            <img
+              className="section-decor section-decor--rsvp-ring"
+              src={ringPillow}
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+            />
+            <img
+              className="section-decor section-decor--rsvp-mail"
+              src={mailbox}
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+            />
             {rsvp.fields.map((field) => (
               <label key={field.name}>
                 <span>{field.label}</span>

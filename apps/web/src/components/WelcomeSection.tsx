@@ -11,6 +11,15 @@ export function WelcomeSection({ welcome }: WelcomeSectionProps) {
         <div className="section-heading">
           <h2>{welcome.title}</h2>
         </div>
+        {welcome.featureImage ? (
+          <figure className="welcome-feature">
+            <img
+              src={welcome.featureImage.src}
+              alt={welcome.featureImage.alt}
+              loading="lazy"
+            />
+          </figure>
+        ) : null}
         {welcome.body.map((paragraph) => (
           <p key={paragraph}>{paragraph}</p>
         ))}
