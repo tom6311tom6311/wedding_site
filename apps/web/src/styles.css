@@ -11,7 +11,6 @@
   background: #fffaf5;
   --page-background: #fffaf5;
   --section-background: #fffaf5;
-  --section-divider-color: rgba(93, 75, 67, 0.62);
   --section-padding-block: clamp(5rem, 8vw, 7.5rem);
   --section-padding-inline: clamp(1.25rem, 5vw, 5rem);
   --hero-card-margin: clamp(0.9rem, 1.6vw, 1.75rem);
@@ -54,35 +53,19 @@ a {
 
 .section-divider {
   display: grid;
-  min-height: clamp(2.6rem, 5vw, 4.25rem);
+  min-height: clamp(1.75rem, 3.5vw, 3rem);
   place-items: center;
+  padding-block: clamp(0.15rem, 0.7vw, 0.45rem);
   padding-inline: clamp(1.25rem, 5vw, 5rem);
   background: var(--section-background);
   pointer-events: none;
 }
 
-.section-divider svg {
+.section-divider img {
   display: block;
-  width: min(24rem, 58vw);
+  width: min(36rem, 78vw);
   height: auto;
-  overflow: visible;
-}
-
-.section-divider__line {
-  fill: none;
-  stroke: var(--section-divider-color);
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 3.3;
-}
-
-.section-divider__line--left,
-.section-divider__line--right {
-  stroke-width: 2.6;
-}
-
-.section-divider__dot {
-  fill: var(--section-divider-color);
+  mix-blend-mode: multiply;
 }
 
 .music-widget {
@@ -131,15 +114,12 @@ a {
   display: grid;
   min-height: calc(100svh - var(--hero-card-margin) - var(--hero-card-margin));
   margin: var(--hero-card-margin);
-  overflow: hidden;
+  overflow: visible;
   border: 1px solid rgba(111, 73, 53, 0.22);
   border-radius: clamp(1.1rem, 3vw, 2.25rem);
   color: #fffaf4;
   isolation: isolate;
   scroll-margin-top: var(--hero-card-margin);
-  box-shadow:
-    0 24px 60px rgba(62, 43, 34, 0.18),
-    0 3px 0 rgba(255, 250, 245, 0.65) inset;
 }
 
 .hero::after {
@@ -163,6 +143,8 @@ a {
 
 .hero__carousel {
   z-index: -2;
+  overflow: hidden;
+  border-radius: inherit;
 }
 
 .hero__image {
@@ -181,6 +163,7 @@ a {
 
 .hero__overlay {
   z-index: -1;
+  border-radius: inherit;
   background:
     linear-gradient(90deg, rgba(39, 25, 18, 0.48), rgba(71, 45, 34, 0.26) 48%, rgba(230, 190, 164, 0.04)),
     linear-gradient(0deg, rgba(41, 27, 20, 0.26), rgba(255, 236, 218, 0.08)),
@@ -199,27 +182,24 @@ a {
 
 .hero__decoration {
   position: absolute;
-  z-index: 2;
+  z-index: 3;
   height: auto;
   object-fit: contain;
-  opacity: 0.92;
-  filter: drop-shadow(0 0.45rem 1rem rgba(39, 25, 18, 0.2));
+  opacity: 0.94;
   pointer-events: none;
   user-select: none;
 }
 
 .hero__decoration--top {
-  top: clamp(0.45rem, 1.6vw, 1.25rem);
-  right: clamp(0.7rem, 2vw, 1.6rem);
-  width: clamp(13rem, 28vw, 27rem);
-  rotate: 3deg;
+  top: clamp(-2.4rem, -2.6vw, -1rem);
+  right: clamp(-2.3rem, -2.5vw, -0.9rem);
+  width: clamp(14rem, 29vw, 30rem);
 }
 
-.hero__decoration--bouquet {
-  bottom: clamp(-0.25rem, 0.5vw, 0.5rem);
-  left: clamp(-0.1rem, 0.8vw, 0.75rem);
-  width: clamp(11rem, 22vw, 22rem);
-  rotate: -5deg;
+.hero__decoration--bottom {
+  bottom: clamp(-1.9rem, -2.1vw, -0.8rem);
+  left: clamp(-1.9rem, -2.1vw, -0.8rem);
+  width: clamp(17rem, 36vw, 38rem);
 }
 
 .hero__eyebrow,
@@ -277,35 +257,33 @@ a {
 
 .hero__carousel-indicators {
   position: absolute;
-  z-index: 2;
+  z-index: 4;
   display: flex;
-  right: clamp(1rem, 3vw, 2rem);
-  bottom: clamp(1rem, 3vw, 2rem);
-  left: clamp(1rem, 3vw, 2rem);
-  max-width: min(32rem, 48vw);
+  right: clamp(1.1rem, 3vw, 2rem);
+  bottom: clamp(5rem, 10vw, 7rem);
+  left: auto;
+  flex-direction: column;
   align-items: center;
-  margin: 0 auto;
   justify-content: center;
-  gap: 0.3rem;
-  overflow: hidden;
+  gap: 0.38rem;
 }
 
 .hero__carousel-indicator {
-  width: clamp(0.65rem, 1.4vw, 1.1rem);
-  height: 0.16rem;
+  width: clamp(0.34rem, 0.75vw, 0.48rem);
+  height: clamp(0.34rem, 0.75vw, 0.48rem);
   border: 0;
-  border-radius: 999px;
+  border-radius: 50%;
   background: rgba(255, 250, 244, 0.22);
   cursor: pointer;
   padding: 0;
   transition:
     background 180ms ease,
-    width 180ms ease;
+    transform 180ms ease;
 }
 
 .hero__carousel-indicator--active {
-  width: clamp(1.1rem, 2.5vw, 1.7rem);
   background: rgba(255, 250, 244, 0.62);
+  transform: scale(1.35);
 }
 
 .hero__carousel-indicator:focus-visible {
@@ -410,17 +388,26 @@ a {
 }
 
 .welcome-inner {
+  --welcome-art-width: min(100%, 52rem);
+  --welcome-copy-inset: clamp(1.5rem, 7vw, 6.5rem);
+  position: relative;
   width: min(980px, 100%);
 }
 
 .intro-section p:not(.section-eyebrow) {
+  position: relative;
+  z-index: 1;
   margin: 1.2rem auto 0;
-  max-width: 42rem;
+  width: var(--welcome-art-width);
+  max-width: 100%;
+  padding-inline: var(--welcome-copy-inset);
 }
 
 .welcome-illustration {
-  width: min(100%, 52rem);
-  margin: clamp(2.25rem, 5vw, 3.75rem) auto 0;
+  position: relative;
+  z-index: 0;
+  width: var(--welcome-art-width);
+  margin: clamp(2rem, 4vw, 3.25rem) auto 0;
 }
 
 .welcome-illustration img {
@@ -431,12 +418,15 @@ a {
 }
 
 .couple-section {
+  position: relative;
   overflow: hidden;
   background: var(--section-background);
   --couple-pair-gap: clamp(0.75rem, 1.8vw, 1.45rem);
 }
 
 .couple-inner {
+  position: relative;
+  z-index: 1;
   display: grid;
   gap: 0;
 }
@@ -694,6 +684,11 @@ a {
   --details-panel-radius: 1.75rem;
   grid-template-columns: minmax(0, 0.96fr) minmax(18rem, 1.04fr);
   align-items: stretch;
+}
+
+.rsvp-layout {
+  grid-template-columns: minmax(0, min(100%, 38rem));
+  justify-content: center;
 }
 
 .detail-panel {
@@ -1108,6 +1103,7 @@ a {
 
 .rsvp-form {
   display: grid;
+  width: 100%;
   gap: 1rem;
   border: 1px solid rgba(73, 55, 45, 0.14);
   border-radius: 8px;
@@ -1177,23 +1173,32 @@ a {
   }
 
   .hero__decoration {
-    opacity: 0.84;
+    opacity: 0.88;
   }
 
   .hero__decoration--top {
-    top: 0.75rem;
-    right: -0.5rem;
-    width: min(58vw, 14rem);
+    top: -1.15rem;
+    right: -1.25rem;
+    width: min(54vw, 16.5rem);
   }
 
-  .hero__decoration--bouquet {
-    bottom: 0.2rem;
-    left: -0.65rem;
-    width: min(46vw, 11rem);
+  .hero__decoration--bottom {
+    bottom: -1rem;
+    left: -1.2rem;
+    width: min(68vw, 20rem);
   }
 
   .hero__carousel-indicators {
-    max-width: 64vw;
+    right: 1rem;
+    bottom: 5.25rem;
+  }
+
+  .welcome-inner {
+    --welcome-copy-inset: clamp(0.75rem, 5vw, 1.5rem);
+  }
+
+  .welcome-illustration {
+    margin-top: clamp(1.5rem, 6vw, 2.25rem);
   }
 }
 

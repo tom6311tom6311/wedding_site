@@ -10,14 +10,11 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
       <div className="section-inner rsvp-inner">
         <div className="section-heading">
           <h2>{rsvp.title}</h2>
-          {rsvp.eyebrow ? (
-            <p className="section-subtitle">{rsvp.eyebrow}</p>
+          {rsvp.subtitle ? (
+            <p className="section-subtitle">{rsvp.subtitle}</p>
           ) : null}
         </div>
         <div className="rsvp-layout">
-          <div>
-            <p>{rsvp.body}</p>
-          </div>
           <form className="rsvp-form" onSubmit={(event) => event.preventDefault()}>
             {rsvp.fields.map((field) => (
               <label key={field.name}>

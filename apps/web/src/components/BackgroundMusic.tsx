@@ -7,7 +7,10 @@ type BackgroundMusicProps = {
 
 export function BackgroundMusic({ music }: BackgroundMusicProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
+  const hasTriedAutoPlayRef = useRef(false);
+  const [audioSrc, setAudioSrc] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [shouldPlay, setShouldPlay] = useState(false);
 
   useEffect(() => {
     if (!audioRef.current || !music) {
@@ -17,8 +20,72 @@ export function BackgroundMusic({ music }: BackgroundMusicProps) {
     audioRef.current.volume = Math.min(Math.max(music.volume ?? 0.42, 0), 1);
   }, [music]);
 
+  useEffect(() => {
+    if (!music?.enabled || !music.src) {
+      return;
+    }
+
+    setAudioSrc(null);
+    hasTriedAutoPlayRef.current = false;
+
+    let cancelled = false;
+    let idleId: number | null = null;
+    let timeoutId: number | null = null;
+
+    const attachAudio = () => {
+      if (!cancelled) {
+        setAudioSrc(music.src);
+      }
+    };
+
+    if ("requestIdleCallback" in window) {
+      idleId = window.requestIdleCallback(attachAudio, { timeout: 2500 });
+    } else {
+      timeoutId = globalThis.setTimeout(attachAudio, 1200);
+    }
+
+    return () => {
+      cancelled = true;
+      if (idleId !== null && "cancelIdleCallback" in window) {
+        window.cancelIdleCallback(idleId);
+      }
+      if (timeoutId !== null) {
+        globalThis.clearTimeout(timeoutId);
+      }
+    };
+  }, [music?.enabled, music?.src]);
+
   if (!music?.enabled || !music.src) {
     return null;
+  }
+
+  const enabledMusic = music;
+
+  async function playMusic() {
+    const audio = audioRef.current;
+
+    if (!audio) {
+      return;
+    }
+
+    try {
+      await audio.play();
+      setIsPlaying(true);
+    } catch {
+      setIsPlaying(false);
+    }
+  }
+
+  function handleCanPlay() {
+    if (!hasTriedAutoPlayRef.current) {
+      hasTriedAutoPlayRef.current = true;
+      void playMusic();
+      return;
+    }
+
+    if (shouldPlay) {
+      void playMusic();
+    }
   }
 
   async function toggleMusic() {
@@ -29,15 +96,16 @@ export function BackgroundMusic({ music }: BackgroundMusicProps) {
     }
 
     if (audio.paused) {
-      try {
-        await audio.play();
-        setIsPlaying(true);
-      } catch {
-        setIsPlaying(false);
+      setShouldPlay(true);
+      if (!audioSrc) {
+        setAudioSrc(enabledMusic.src);
+        return;
       }
+      await playMusic();
       return;
     }
 
+    setShouldPlay(false);
     audio.pause();
     setIsPlaying(false);
   }
@@ -46,10 +114,13 @@ export function BackgroundMusic({ music }: BackgroundMusicProps) {
     <div className="music-widget">
       <audio
         ref={audioRef}
-        src={music.src}
-        loop={music.loop ?? true}
-        preload="metadata"
-        aria-label={music.title}
+        src={audioSrc ?? undefined}
+        loop={enabledMusic.loop ?? true}
+        preload={audioSrc ? "auto" : "none"}
+        aria-label={enabledMusic.title}
+        onCanPlay={handleCanPlay}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
       />
       <button
         className={`music-control${isPlaying ? " music-control--playing" : ""}`}

@@ -178,9 +178,8 @@
     ]
   },
   "rsvp": {
-    "eyebrow": "RSVP",
-    "title": "Let us know if you can make it.",
-    "body": "The form is ready visually. We can connect it to a backend or external form service in the next step.",
+    "title": "RSVP",
+    "subtitle": "Let us know if you can make it.",
     "submitLabel": "Send RSVP",
     "fields": [
       {

@@ -72,13 +72,13 @@ function HeroDecorations() {
     <>
       <img
         className="hero__decoration hero__decoration--top"
-        src="/images/hero-floral-top.png"
+        src="/images/hero-rose-top-right.png"
         alt=""
         aria-hidden="true"
       />
       <img
-        className="hero__decoration hero__decoration--bouquet"
-        src="/images/hero-bouquet.png"
+        className="hero__decoration hero__decoration--bottom"
+        src="/images/hero-rose-bottom-left.png"
         alt=""
         aria-hidden="true"
       />

@@ -16,17 +16,15 @@ export function InvitationSections({ content }: InvitationSectionsProps) {
   return (
     <>
       <HeroSection hero={content.hero} />
-      <SectionDivider />
       <WelcomeSection welcome={content.welcome} />
-      <SectionDivider />
       <CoupleSection couple={content.couple} />
-      <SectionDivider />
+      <SectionDivider variant={0} />
       <StorySection story={content.story} />
-      <SectionDivider />
+      <SectionDivider variant={1} />
       <DetailsSection venue={content.venue} />
-      <SectionDivider />
+      <SectionDivider variant={2} />
       <ScheduleSection schedule={content.schedule} />
-      <SectionDivider />
+      <SectionDivider variant={3} />
       <RsvpSection rsvp={content.rsvp} />
     </>
   );

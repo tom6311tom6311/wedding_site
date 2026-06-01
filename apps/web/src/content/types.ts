@@ -110,9 +110,8 @@ export type WeddingContent = {
     }>;
   };
   rsvp: {
-    eyebrow: string;
     title: string;
-    body: string;
+    subtitle: string;
     submitLabel: string;
     fields: Array<{
       name: string;
