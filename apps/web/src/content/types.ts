@@ -29,6 +29,13 @@ export type WeddingContent = {
     title: string;
     loop?: boolean;
     volume?: number;
+    consent?: {
+      eyebrow: string;
+      title: string;
+      description: string;
+      acceptLabel: string;
+      dismissLabel: string;
+    };
   };
   hero: {
     eyebrow: string;

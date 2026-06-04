@@ -8,7 +8,14 @@
     "src": "/audio/wedding-theme.mp3",
     "title": "Original instrumental wedding theme",
     "loop": true,
-    "volume": 0.42
+    "volume": 0.42,
+    "consent": {
+      "eyebrow": "Music",
+      "title": "Background music",
+      "description": "This invitation can play background music. You can pause or play it again anytime with the button in the lower-right corner.",
+      "acceptLabel": "Play music",
+      "dismissLabel": "Not now"
+    }
   },
   "hero": {
     "eyebrow": "Together with their families",
