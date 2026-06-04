@@ -127,6 +127,7 @@ export type WeddingContent = {
       type: "text" | "email" | "tel" | "number" | "textarea" | "select";
       placeholder?: string;
       options?: string[];
+      required?: boolean;
     }>;
   };
 };

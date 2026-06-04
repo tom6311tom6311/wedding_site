@@ -193,13 +193,15 @@
         "name": "name",
         "label": "Your name",
         "type": "text",
-        "placeholder": "Full name"
+        "placeholder": "Full name",
+        "required": true
       },
       {
-        "name": "email",
-        "label": "Email",
-        "type": "email",
-        "placeholder": "name@example.com"
+        "name": "phone",
+        "label": "Cellphone number",
+        "type": "tel",
+        "placeholder": "0912345678",
+        "required": true
       },
       {
         "name": "attendance",
@@ -208,13 +210,15 @@
         "options": [
           "Yes, I will be there",
           "Sorry, I cannot make it"
-        ]
+        ],
+        "required": true
       },
       {
         "name": "guests",
         "label": "Number of guests",
         "type": "number",
-        "placeholder": "1"
+        "placeholder": "1",
+        "required": true
       },
       {
         "name": "message",

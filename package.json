@@ -4,11 +4,16 @@
   "private": true,
   "type": "module",
   "workspaces": [
+    "apps/api",
     "apps/web"
   ],
   "scripts": {
     "dev": "npm --workspace @wedding-site/web run dev --",
-    "build": "npm --workspace @wedding-site/web run build",
+    "dev:api": "npm --workspace @wedding-site/api run dev",
+    "dev:web": "npm --workspace @wedding-site/web run dev --",
+    "build": "npm --workspaces --if-present run build",
+    "build:api": "npm --workspace @wedding-site/api run build",
+    "build:web": "npm --workspace @wedding-site/web run build",
     "preview": "npm --workspace @wedding-site/web run preview --"
   }
 }

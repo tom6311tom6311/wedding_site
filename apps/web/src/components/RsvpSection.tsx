@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState } from "react";
+import type { Dispatch, FormEvent, SetStateAction } from "react";
 import type { WeddingContent } from "../content/types";
 import mailbox from "../assets/decorations/mailbox.png";
 import ringPillow from "../assets/decorations/ring-pillow.png";
@@ -7,9 +8,171 @@ type RsvpSectionProps = {
   rsvp: WeddingContent["rsvp"];
 };
 
+type RsvpStatus = {
+  kind: "success" | "error";
+  message: string;
+};
+
+type RsvpPayload = {
+  name: string;
+  phone: string;
+  attendance: string;
+  guestCount: number;
+  message: string;
+};
+
+type RsvpFormValues = {
+  name: string;
+  phone: string;
+  attendance: string;
+  guests: string;
+  message: string;
+};
+
 const guestCountOptions = Array.from({ length: 11 }, (_, index) => String(index));
+const RSVP_API_BASE_URL =
+  import.meta.env.VITE_RSVP_API_BASE_URL ?? "http://localhost:4000";
+const RSVP_BROWSER_TOKEN_STORAGE_KEY = "wedding-site:rsvp-token";
 
 export function RsvpSection({ rsvp }: RsvpSectionProps) {
+  const formRef = useRef<HTMLFormElement>(null);
+  const [initialValues, setInitialValues] = useState<Record<string, string>>({});
+  const [savedValues, setSavedValues] = useState<RsvpFormValues | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [invalidFields, setInvalidFields] = useState<Set<string>>(() => new Set());
+  const [status, setStatus] = useState<RsvpStatus | null>(null);
+  const currentValues = toComparableValues(initialValues);
+  const hasSavedResponse = savedValues !== null;
+  const hasUnsavedChanges = savedValues !== null && !areFormValuesEqual(currentValues, savedValues);
+  const shouldDisableSubmit = isSubmitting || (hasSavedResponse && !hasUnsavedChanges);
+  const submitLabel = isSubmitting
+    ? "送出中..."
+    : hasSavedResponse
+      ? "更新回覆"
+      : rsvp.submitLabel;
+
+  useEffect(() => {
+    const browserToken = window.localStorage.getItem(RSVP_BROWSER_TOKEN_STORAGE_KEY);
+
+    if (!browserToken) {
+      return;
+    }
+
+    let cancelled = false;
+
+    async function loadStoredRsvp() {
+      try {
+        const response = await fetch(`${RSVP_API_BASE_URL}/api/rsvp/me`, {
+          headers: {
+            Authorization: `Bearer ${browserToken}`,
+          },
+        });
+
+        if (!response.ok) {
+          return;
+        }
+
+        const body = (await response.json()) as RsvpApiResponse;
+
+        if (!cancelled) {
+          const nextValues = toFormValues(body.rsvp);
+
+          setInitialValues(nextValues);
+          setSavedValues(nextValues);
+        }
+      } catch {
+        // Prefill is opportunistic; the form still works without it.
+      }
+    }
+
+    void loadStoredRsvp();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+
+    if (!form.reportValidity()) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    setStatus(null);
+
+    try {
+      const formData = new FormData(form);
+      const payload = {
+        name: String(formData.get("name") ?? ""),
+        phone: String(formData.get("phone") ?? ""),
+        attendance: String(formData.get("attendance") ?? ""),
+        guestCount: Number(formData.get("guests") ?? 0),
+        message: String(formData.get("message") ?? ""),
+      };
+      const validation = validateRsvpPayload(payload);
+
+      if (!validation.isValid) {
+        setInvalidFields(validation.invalidFields);
+        setStatus({
+          kind: "error",
+          message: validation.message,
+        });
+        return;
+      }
+
+      setInvalidFields(new Set());
+
+      const browserToken = window.localStorage.getItem(RSVP_BROWSER_TOKEN_STORAGE_KEY);
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+
+      if (browserToken) {
+        headers.Authorization = `Bearer ${browserToken}`;
+      }
+
+      const response = await fetch(`${RSVP_API_BASE_URL}/api/rsvp`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(payload),
+      });
+
+      if (response.status === 409) {
+        setStatus({
+          kind: "error",
+          message: "已有相同姓名或手機的回覆，請確認姓名與手機號碼皆正確。",
+        });
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error("Failed to submit RSVP");
+      }
+
+      const body = (await response.json()) as RsvpApiResponse;
+      const nextValues = toFormValues(body.rsvp);
+
+      window.localStorage.setItem(RSVP_BROWSER_TOKEN_STORAGE_KEY, body.browserToken);
+      setInitialValues(nextValues);
+      setSavedValues(nextValues);
+      setStatus({
+        kind: "success",
+        message: hasSavedResponse ? "已更新您的回覆。" : "已收到您的回覆，謝謝！",
+      });
+    } catch {
+      setStatus({
+        kind: "error",
+        message: "送出失敗，請稍後再試。",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   return (
     <section className="page-section rsvp-section" id="rsvp">
       <div className="section-inner rsvp-inner">
@@ -20,7 +183,7 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
           ) : null}
         </div>
         <div className="rsvp-layout">
-          <form className="rsvp-form" onSubmit={(event) => event.preventDefault()}>
+          <form className="rsvp-form" ref={formRef} onSubmit={handleSubmit}>
             <img
               className="section-decor section-decor--rsvp-ring"
               src={ringPillow}
@@ -37,31 +200,83 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
             />
             {rsvp.fields.map((field) => (
               <div className="rsvp-field" key={field.name}>
-                <span className="rsvp-field__label">{field.label}</span>
+                <span className="rsvp-field__label">
+                  {field.label}
+                  {field.required ? (
+                    <span className="rsvp-field__required" aria-label="required">
+                      *
+                    </span>
+                  ) : null}
+                </span>
                 {field.name === "guests" ? (
                   <RsvpSelect
                     name={field.name}
                     options={guestCountOptions}
-                    defaultValue="0"
+                    value={initialValues[field.name] ?? "0"}
+                    required={field.required}
+                    invalid={invalidFields.has(field.name)}
+                    onChange={(value) =>
+                      updateFieldValue(field.name, value, setInitialValues, setInvalidFields)
+                    }
                   />
                 ) : field.type === "textarea" ? (
-                  <textarea name={field.name} placeholder={field.placeholder} rows={4} />
+                  <textarea
+                    name={field.name}
+                    placeholder={field.placeholder}
+                    rows={4}
+                    required={field.required}
+                    value={initialValues[field.name] ?? ""}
+                    aria-invalid={invalidFields.has(field.name)}
+                    onChange={(event) =>
+                      updateFieldValue(
+                        field.name,
+                        event.target.value,
+                        setInitialValues,
+                        setInvalidFields,
+                      )
+                    }
+                  />
                 ) : field.type === "select" ? (
                   <RsvpSelect
                     name={field.name}
                     options={field.options ?? []}
                     placeholder="請選擇"
+                    value={initialValues[field.name] ?? ""}
+                    required={field.required}
+                    invalid={invalidFields.has(field.name)}
+                    onChange={(value) =>
+                      updateFieldValue(field.name, value, setInitialValues, setInvalidFields)
+                    }
                   />
                 ) : (
                   <input
                     name={field.name}
                     type={field.type}
                     placeholder={field.placeholder}
+                    required={field.required}
+                    value={initialValues[field.name] ?? ""}
+                    aria-invalid={invalidFields.has(field.name)}
+                    inputMode={field.name === "phone" ? "tel" : undefined}
+                    autoComplete={field.name === "phone" ? "tel" : undefined}
+                    maxLength={field.name === "phone" ? 13 : undefined}
+                    onChange={(event) =>
+                      updateFieldValue(
+                        field.name,
+                        event.target.value,
+                        setInitialValues,
+                        setInvalidFields,
+                      )
+                    }
                   />
                 )}
               </div>
             ))}
-            <button type="submit">{rsvp.submitLabel}</button>
+            <button type="submit" disabled={shouldDisableSubmit}>
+              {submitLabel}
+            </button>
+            {status ? (
+              <p className={`rsvp-status rsvp-status--${status.kind}`}>{status.message}</p>
+            ) : null}
           </form>
         </div>
       </div>
@@ -72,15 +287,25 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
 type RsvpSelectProps = {
   name: string;
   options: string[];
-  defaultValue?: string;
+  value: string;
   placeholder?: string;
+  required?: boolean;
+  invalid?: boolean;
+  onChange: (value: string) => void;
 };
 
-function RsvpSelect({ name, options, defaultValue = "", placeholder }: RsvpSelectProps) {
+function RsvpSelect({
+  name,
+  options,
+  value,
+  placeholder,
+  required = false,
+  invalid = false,
+  onChange,
+}: RsvpSelectProps) {
   const listboxId = useId();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [value, setValue] = useState(defaultValue);
   const selectedLabel = value || placeholder || "";
 
   useEffect(() => {
@@ -110,18 +335,25 @@ function RsvpSelect({ name, options, defaultValue = "", placeholder }: RsvpSelec
   }, [isOpen]);
 
   function chooseOption(option: string) {
-    setValue(option);
+    onChange(option);
     setIsOpen(false);
   }
 
   return (
-    <div className={`rsvp-select${isOpen ? " rsvp-select--open" : ""}`} ref={dropdownRef}>
-      <input name={name} type="hidden" value={value} />
+    <div
+      className={`rsvp-select${isOpen ? " rsvp-select--open" : ""}${
+        invalid ? " rsvp-select--invalid" : ""
+      }`}
+      ref={dropdownRef}
+    >
+      <input name={name} type="hidden" value={value} readOnly />
       <button
         className={`rsvp-select__trigger${value ? "" : " rsvp-select__trigger--placeholder"}`}
         type="button"
         aria-expanded={isOpen}
         aria-controls={listboxId}
+        aria-required={required}
+        aria-invalid={invalid}
         onClick={() => setIsOpen((current) => !current)}
       >
         <span>{selectedLabel}</span>
@@ -145,4 +377,108 @@ function RsvpSelect({ name, options, defaultValue = "", placeholder }: RsvpSelec
       ) : null}
     </div>
   );
+}
+
+type RsvpApiResponse = {
+  browserToken: string;
+  rsvp: {
+    name: string;
+    phone: string;
+    attendance: string;
+    guestCount: number;
+    message: string;
+  };
+};
+
+function toFormValues(rsvp: RsvpApiResponse["rsvp"]) {
+  return {
+    name: rsvp.name,
+    phone: rsvp.phone,
+    attendance: rsvp.attendance,
+    guests: String(rsvp.guestCount),
+    message: rsvp.message,
+  };
+}
+
+function toComparableValues(values: Record<string, string>): RsvpFormValues {
+  return {
+    name: values.name ?? "",
+    phone: values.phone ?? "",
+    attendance: values.attendance ?? "",
+    guests: values.guests ?? "0",
+    message: values.message ?? "",
+  };
+}
+
+function areFormValuesEqual(first: RsvpFormValues, second: RsvpFormValues) {
+  return (
+    first.name.trim() === second.name.trim() &&
+    first.phone.trim() === second.phone.trim() &&
+    first.attendance === second.attendance &&
+    first.guests === second.guests &&
+    first.message.trim() === second.message.trim()
+  );
+}
+
+function validateRsvpPayload(payload: RsvpPayload) {
+  const invalidFields = new Set<string>();
+
+  if (!payload.name.trim()) {
+    invalidFields.add("name");
+  }
+
+  if (!isValidPhoneInput(payload.phone)) {
+    invalidFields.add("phone");
+  }
+
+  if (!payload.attendance.trim()) {
+    invalidFields.add("attendance");
+  }
+
+  if (!Number.isInteger(payload.guestCount) || payload.guestCount < 0 || payload.guestCount > 10) {
+    invalidFields.add("guests");
+  }
+
+  if (invalidFields.size === 0) {
+    return {
+      isValid: true,
+      invalidFields,
+      message: "",
+    };
+  }
+
+  return {
+    isValid: false,
+    invalidFields,
+    message: invalidFields.has("phone")
+      ? "請輸入 09 開頭的 10 位數手機號碼。"
+      : "請完成所有必填欄位。",
+  };
+}
+
+function isValidPhoneInput(input: string) {
+  const compact = input.trim().replace(/[\s().-]/g, "");
+
+  return /^09\d{8}$/.test(compact);
+}
+
+function updateFieldValue(
+  name: string,
+  value: string,
+  setValues: Dispatch<SetStateAction<Record<string, string>>>,
+  setInvalidFields: Dispatch<SetStateAction<Set<string>>>,
+) {
+  setValues((current) => ({
+    ...current,
+    [name]: value,
+  }));
+  setInvalidFields((current) => {
+    if (!current.has(name)) {
+      return current;
+    }
+
+    const next = new Set(current);
+    next.delete(name);
+    return next;
+  });
 }

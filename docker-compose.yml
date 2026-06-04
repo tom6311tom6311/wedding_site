@@ -1,0 +1,50 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - wedding-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      WEB_ORIGIN: ${WEB_ORIGIN}
+      PHONE_HASH_SECRET: ${PHONE_HASH_SECRET}
+      BROWSER_TOKEN_SECRET: ${BROWSER_TOKEN_SECRET}
+    ports:
+      - "${API_PORT}:4000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./apps/api/src:/app/apps/api/src
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    environment:
+      VITE_RSVP_API_BASE_URL: ${VITE_RSVP_API_BASE_URL}
+    ports:
+      - "${WEB_PORT}:5173"
+    depends_on:
+      - api
+    volumes:
+      - ./apps/web/src:/app/apps/web/src
+      - ./apps/web/public:/app/apps/web/public
+
+volumes:
+  wedding-postgres-data:
