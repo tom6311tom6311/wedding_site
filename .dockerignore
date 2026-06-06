@@ -1,0 +1,15 @@
+.git
+.agents
+.codex
+node_modules
+apps/*/node_modules
+apps/web/dist
+dist
+.env
+.env.*
+!.env.example
+!.env.production.example
+npm-debug.log*
+Dockerfile*
+docker-compose*.yml
+README.md
