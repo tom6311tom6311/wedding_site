@@ -54,6 +54,20 @@
       "For now, the content is intentionally easy to replace. Update this JSON file whenever the date, venue, photos, or copy are ready."
     ]
   },
+  "countdown": {
+    "eyebrow": "Countdown",
+    "title": "Counting down to the day",
+    "subtitle": "Until we gather in Taipei to celebrate together.",
+    "targetDate": "2026-10-18T15:30:00+08:00",
+    "dateLine": "October 18, 2026 · 15:30",
+    "completedLabel": "Today is the wedding day.",
+    "units": {
+      "days": "Days",
+      "hours": "Hours",
+      "minutes": "Minutes",
+      "seconds": "Seconds"
+    }
+  },
   "couple": {
     "eyebrow": "Bride & Groom",
     "title": "Meet the couple",

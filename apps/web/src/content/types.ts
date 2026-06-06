@@ -58,7 +58,20 @@ export type WeddingContent = {
     title: string;
     featureImage?: ImageAsset;
     body: string[];
-    illustration?: ImageAsset;
+  };
+  countdown: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    targetDate: string;
+    dateLine: string;
+    completedLabel: string;
+    units: {
+      days: string;
+      hours: string;
+      minutes: string;
+      seconds: string;
+    };
   };
   couple: {
     eyebrow: string;

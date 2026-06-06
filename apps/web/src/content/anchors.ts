@@ -1,5 +1,6 @@
 export const sectionAnchors = [
   "#welcome",
+  "#countdown",
   "#couple",
   "#story",
   "#details",
@@ -7,5 +8,3 @@ export const sectionAnchors = [
   "#puzzle",
   "#rsvp",
 ] as const;
-
-export type SectionAnchor = (typeof sectionAnchors)[number];

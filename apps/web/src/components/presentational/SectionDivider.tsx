@@ -23,7 +23,9 @@ export function SectionDivider({ variant = 0 }: SectionDividerProps) {
 
   return (
     <div className="section-divider" aria-hidden="true">
-      <img src={src} alt="" loading="lazy" />
+      <div className="section-divider__art">
+        <img className="section-divider__image" src={src} alt="" loading="lazy" />
+      </div>
     </div>
   );
 }

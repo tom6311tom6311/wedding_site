@@ -1,4 +1,5 @@
 import type { WeddingContent } from "../content/types";
+import { CountdownSection } from "./CountdownSection";
 import { CoupleSection } from "./CoupleSection";
 import { DetailsSection } from "./DetailsSection";
 import { HeroSection } from "./HeroSection";
@@ -18,6 +19,7 @@ export function InvitationSections({ content }: InvitationSectionsProps) {
     <>
       <HeroSection hero={content.hero} />
       <WelcomeSection welcome={content.welcome} />
+      <CountdownSection countdown={content.countdown} />
       <SectionDivider variant={0} />
       <CoupleSection couple={content.couple} />
       <SectionDivider variant={1} />

@@ -23,15 +23,6 @@ export function WelcomeSection({ welcome }: WelcomeSectionProps) {
         {welcome.body.map((paragraph) => (
           <p key={paragraph}>{paragraph}</p>
         ))}
-        {welcome.illustration ? (
-          <figure className="welcome-illustration">
-            <img
-              src={welcome.illustration.src}
-              alt={welcome.illustration.alt}
-              loading="lazy"
-            />
-          </figure>
-        ) : null}
       </div>
     </section>
   );
