@@ -184,6 +184,98 @@
       }
     ]
   },
+  "puzzle": {
+    "eyebrow": "Photo Puzzle",
+    "title": "Unlock a few hidden photos",
+    "subtitle": "Solve each tile puzzle to reveal a photo. The puzzles get a little more challenging after you unlock more.",
+    "lockedLabel": "Locked",
+    "unlockedLabel": "Unlocked",
+    "startLabel": "Start puzzle",
+    "continueLabel": "Open photo",
+    "identifyTitle": "Find your RSVP first",
+    "identifyBody": "Use the same browser after sending RSVP, or enter the same name and cellphone number you used for RSVP.",
+    "rsvpLinkLabel": "Submit RSVP",
+    "solveTitle": "Put the photo back together",
+    "solveBody": "Tap two tiles to swap them. When every tile returns to the right place, the photo unlocks.",
+    "difficultyTiers": [
+      {
+        "startsAt": 1,
+        "rows": 2,
+        "columns": 3
+      },
+      {
+        "startsAt": 11,
+        "rows": 3,
+        "columns": 4
+      },
+      {
+        "startsAt": 31,
+        "rows": 4,
+        "columns": 5
+      },
+      {
+        "startsAt": 51,
+        "rows": 5,
+        "columns": 6
+      },
+      {
+        "startsAt": 71,
+        "rows": 6,
+        "columns": 7
+      }
+    ],
+    "labels": {
+      "rankUnavailable": "Not ranked yet",
+      "rankFormat": "Rank {rank}",
+      "progressLabel": "Unlock progress",
+      "solvedCount": "{count} photos",
+      "solvedCountWithTotal": "{count}/{total}",
+      "firstRankMessage": "You are currently in first place.",
+      "firstRankLeadMessage": "You are in first place, leading the next guest by {lead} photos.",
+      "nextRankMessage": "Unlock {gap} more photos to catch the next rank.",
+      "joinRankMessage": "Submit RSVP to join the ranking.",
+      "closetButton": "Open photo closet",
+      "namePlaceholder": "Name",
+      "phonePlaceholder": "0912345678",
+      "identifySubmitLabel": "Find my RSVP",
+      "identifyingLabel": "Looking up...",
+      "identifyNotFoundMessage": "No matching RSVP was found. Please check your name and cellphone number.",
+      "identifyErrorMessage": "Lookup failed. Please try again later.",
+      "unlockErrorMessage": "Unlock failed. Please try again later.",
+      "closeLabel": "Close",
+      "tileAriaLabel": "Tile {index}",
+      "nextPhotoLabel": "Next photo",
+      "allSolvedTitle": "All photos unlocked",
+      "allSolvedBody": "You have unlocked all {total} photos.",
+      "closetTitle": "Photo closet",
+      "closetSummary": "{count} photos collected.",
+      "closetSummaryWithTotal": "{count}/{total} photos collected.",
+      "closetEmpty": "No photos collected yet. Solve the next puzzle first."
+    },
+    "photos": [
+      {
+        "id": "garden",
+        "title": "Garden Moment",
+        "src": "/images/hero-placeholder.png",
+        "alt": "A romantic garden wedding scene",
+        "hint": "Start with the corners."
+      },
+      {
+        "id": "couple",
+        "title": "Couple Portrait",
+        "src": "/images/hero-placeholder.png",
+        "alt": "A wedding portrait",
+        "hint": "Match the brightest edges first."
+      },
+      {
+        "id": "celebration",
+        "title": "Celebration",
+        "src": "/images/hero-placeholder.png",
+        "alt": "A wedding celebration photo",
+        "hint": "Look for continuous lines."
+      }
+    ]
+  },
   "rsvp": {
     "title": "RSVP",
     "subtitle": "Let us know if you can make it.",

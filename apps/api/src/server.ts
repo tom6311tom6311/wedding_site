@@ -2,6 +2,7 @@ import cors from "@fastify/cors";
 import Fastify from "fastify";
 import { loadConfig } from "./config.js";
 import { createPool, migrate } from "./db.js";
+import { registerPuzzleRoutes } from "./puzzle.js";
 import { registerRsvpRoutes } from "./rsvp.js";
 
 const config = loadConfig();
@@ -16,6 +17,7 @@ await app.register(cors, {
 
 app.get("/health", async () => ({ ok: true }));
 registerRsvpRoutes(app, pool, config);
+registerPuzzleRoutes(app, pool, config);
 
 async function start() {
   await waitForDatabase();

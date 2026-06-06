@@ -16,6 +16,12 @@ export type RsvpRow = {
   updated_at: Date;
 };
 
+export type PhotoUnlockRow = {
+  rsvp_id: string;
+  photo_id: string;
+  unlocked_at: Date;
+};
+
 export function createPool(config: AppConfig) {
   return new pg.Pool({
     connectionString: config.databaseUrl,
@@ -68,5 +74,17 @@ export async function migrate(pool: pg.Pool) {
   await pool.query(`
     ALTER TABLE rsvp_responses
     ALTER COLUMN name_key SET NOT NULL
+  `);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS photo_unlocks (
+      rsvp_id uuid NOT NULL REFERENCES rsvp_responses(id) ON DELETE CASCADE,
+      photo_id text NOT NULL,
+      unlocked_at timestamptz NOT NULL DEFAULT now(),
+      PRIMARY KEY (rsvp_id, photo_id)
+    )
+  `);
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS photo_unlocks_rsvp_id_idx
+    ON photo_unlocks (rsvp_id)
   `);
 }

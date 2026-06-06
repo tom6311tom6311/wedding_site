@@ -2,6 +2,7 @@ import type { WeddingContent } from "../content/types";
 import { CoupleSection } from "./CoupleSection";
 import { DetailsSection } from "./DetailsSection";
 import { HeroSection } from "./HeroSection";
+import { PuzzleSection } from "./PuzzleSection";
 import { RsvpSection } from "./RsvpSection";
 import { ScheduleSection } from "./ScheduleSection";
 import { StorySection } from "./StorySection";
@@ -27,6 +28,12 @@ export function InvitationSections({ content }: InvitationSectionsProps) {
       <ScheduleSection schedule={content.schedule} />
       <SectionDivider variant={4} />
       <RsvpSection rsvp={content.rsvp} />
+      {content.puzzle ? (
+        <>
+          <SectionDivider variant={5} />
+          <PuzzleSection puzzle={content.puzzle} />
+        </>
+      ) : null}
     </>
   );
 }

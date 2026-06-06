@@ -163,6 +163,7 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
         kind: "success",
         message: hasSavedResponse ? "已更新您的回覆。" : "已收到您的回覆，謝謝！",
       });
+      window.requestAnimationFrame(() => scrollToPuzzleSection());
     } catch {
       setStatus({
         kind: "error",
@@ -460,6 +461,49 @@ function isValidPhoneInput(input: string) {
   const compact = input.trim().replace(/[\s().-]/g, "");
 
   return /^09\d{8}$/.test(compact);
+}
+
+function scrollToPuzzleSection() {
+  const puzzleSection = document.getElementById("puzzle");
+
+  if (!puzzleSection) {
+    return;
+  }
+
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const targetY = window.scrollY + puzzleSection.getBoundingClientRect().top;
+
+  if (prefersReducedMotion) {
+    window.scrollTo({ top: targetY });
+    return;
+  }
+
+  animateScrollTo(targetY, 1600);
+}
+
+function animateScrollTo(targetY: number, durationMs: number) {
+  const startY = window.scrollY;
+  const distance = targetY - startY;
+  const startTime = window.performance.now();
+
+  function step(currentTime: number) {
+    const progress = Math.min((currentTime - startTime) / durationMs, 1);
+    const easedProgress = easeInOutCubic(progress);
+
+    window.scrollTo({ top: startY + distance * easedProgress });
+
+    if (progress < 1) {
+      window.requestAnimationFrame(step);
+    }
+  }
+
+  window.requestAnimationFrame(step);
+}
+
+function easeInOutCubic(progress: number) {
+  return progress < 0.5
+    ? 4 * progress * progress * progress
+    : 1 - Math.pow(-2 * progress + 2, 3) / 2;
 }
 
 function updateFieldValue(

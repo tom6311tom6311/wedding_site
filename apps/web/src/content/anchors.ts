@@ -4,6 +4,7 @@ export const sectionAnchors = [
   "#story",
   "#details",
   "#schedule",
+  "#puzzle",
   "#rsvp",
 ] as const;
 

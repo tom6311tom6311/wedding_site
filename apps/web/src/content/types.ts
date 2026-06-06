@@ -117,6 +117,60 @@ export type WeddingContent = {
       }>;
     }>;
   };
+  puzzle?: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    lockedLabel: string;
+    unlockedLabel: string;
+    startLabel: string;
+    continueLabel: string;
+    identifyTitle: string;
+    identifyBody: string;
+    rsvpLinkLabel: string;
+    solveTitle: string;
+    solveBody: string;
+    difficultyTiers: Array<{
+      startsAt: number;
+      rows: number;
+      columns: number;
+    }>;
+    labels: {
+      rankUnavailable: string;
+      rankFormat: string;
+      progressLabel: string;
+      solvedCount: string;
+      solvedCountWithTotal: string;
+      firstRankMessage: string;
+      firstRankLeadMessage: string;
+      nextRankMessage: string;
+      joinRankMessage: string;
+      closetButton: string;
+      namePlaceholder: string;
+      phonePlaceholder: string;
+      identifySubmitLabel: string;
+      identifyingLabel: string;
+      identifyNotFoundMessage: string;
+      identifyErrorMessage: string;
+      unlockErrorMessage: string;
+      closeLabel: string;
+      tileAriaLabel: string;
+      nextPhotoLabel: string;
+      allSolvedTitle: string;
+      allSolvedBody: string;
+      closetTitle: string;
+      closetSummary: string;
+      closetSummaryWithTotal: string;
+      closetEmpty: string;
+    };
+    photos: Array<{
+      id: string;
+      title: string;
+      src: string;
+      alt: string;
+      hint?: string;
+    }>;
+  };
   rsvp: {
     title: string;
     subtitle: string;
