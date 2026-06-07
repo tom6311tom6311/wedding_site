@@ -14,6 +14,7 @@ export type ImageAsset = {
   src: string;
   alt: string;
   objectPosition?: string;
+  fit?: "cover" | "contain";
   scale?: number;
   offsetY?: string;
 };
@@ -100,10 +101,16 @@ export type WeddingContent = {
   story: {
     eyebrow: string;
     title: string;
+    cover?: {
+      image: ImageAsset;
+      openAriaLabel: string;
+    };
+    fallbackImages: ImageAsset[];
     milestones: Array<{
       year: string;
       title: string;
       body: string;
+      images?: ImageAsset[];
     }>;
   };
   venue: {

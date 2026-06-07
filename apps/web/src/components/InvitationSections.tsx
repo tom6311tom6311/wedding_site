@@ -20,22 +20,22 @@ export function InvitationSections({ content }: InvitationSectionsProps) {
       <HeroSection hero={content.hero} />
       <WelcomeSection welcome={content.welcome} />
       <CountdownSection countdown={content.countdown} />
-      <SectionDivider variant={0} />
       <CoupleSection couple={content.couple} />
-      <SectionDivider variant={1} />
+      <SectionDivider variant={0} />
       <StorySection story={content.story} />
-      <SectionDivider variant={2} />
+      <SectionDivider variant={1} />
       <DetailsSection venue={content.venue} />
-      <SectionDivider variant={3} />
+      <SectionDivider variant={2} />
       <ScheduleSection schedule={content.schedule} />
-      <SectionDivider variant={4} />
+      <SectionDivider variant={3} />
       <RsvpSection rsvp={content.rsvp} />
       {content.puzzle ? (
         <>
-          <SectionDivider variant={5} />
+          <SectionDivider variant={4} />
           <PuzzleSection puzzle={content.puzzle} />
         </>
       ) : null}
+      <SectionDivider variant={5} footer />
     </>
   );
 }

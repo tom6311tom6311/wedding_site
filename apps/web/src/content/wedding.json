@@ -129,6 +129,12 @@
   "story": {
     "eyebrow": "Our Story",
     "title": "A few chapters before the big day.",
+    "fallbackImages": [
+      {
+        "src": "/images/hero-placeholder.png",
+        "alt": "Wedding story photo"
+      }
+    ],
     "milestones": [
       {
         "year": "2019",

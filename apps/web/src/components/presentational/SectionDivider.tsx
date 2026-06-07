@@ -16,13 +16,17 @@ const sectionDividerImages = [
 
 type SectionDividerProps = {
   variant?: number;
+  footer?: boolean;
 };
 
-export function SectionDivider({ variant = 0 }: SectionDividerProps) {
+export function SectionDivider({ variant = 0, footer = false }: SectionDividerProps) {
   const src = sectionDividerImages[variant % sectionDividerImages.length];
 
   return (
-    <div className="section-divider" aria-hidden="true">
+    <div
+      className={`section-divider${footer ? " section-divider--footer" : ""}`}
+      aria-hidden="true"
+    >
       <div className="section-divider__art">
         <img className="section-divider__image" src={src} alt="" loading="lazy" />
       </div>
