@@ -59,6 +59,11 @@
       "description": "Latest RSVP and puzzle events.",
       "emptyLabel": "No recent activity yet.",
       "itemAriaLabel": "{type} by {name}",
+      "sentenceTemplates": {
+        "rsvpCreated": "{name} submitted an RSVP.",
+        "rsvpUpdated": "{name} updated their RSVP.",
+        "puzzleUnlocked": "{name} solved puzzle {puzzle}."
+      },
       "typeLabels": {
         "rsvpCreated": "Submitted RSVP",
         "rsvpUpdated": "Updated RSVP",

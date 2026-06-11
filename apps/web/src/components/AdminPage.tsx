@@ -622,18 +622,9 @@ export function AdminPage({ content }: AdminPageProps) {
                         type: getActivityTypeLabel(activity, admin),
                       })}
                     >
-                      <div className="admin-activity__main">
-                        <strong>{getActivityTypeLabel(activity, admin)}</strong>
-                        <span>{activity.guestName}</span>
-                        {activity.type === "puzzle_unlocked" ? (
-                          <p>
-                            {activity.photoId
-                              ? (puzzlePhotoTitles.get(activity.photoId) ??
-                                admin.activities.unknownPuzzleLabel)
-                              : admin.activities.unknownPuzzleLabel}
-                          </p>
-                        ) : null}
-                      </div>
+                      <p className="admin-activity__sentence">
+                        {formatActivitySentence(activity, admin, puzzlePhotoTitles)}
+                      </p>
                       <time dateTime={activity.happenedAt}>
                         {formatDateTime(activity.happenedAt)}
                       </time>
@@ -776,6 +767,31 @@ function getActivityTypeLabel(activity: AdminActivity, admin: AdminContent) {
   }
 
   return admin.activities.typeLabels.puzzleUnlocked;
+}
+
+function formatActivitySentence(
+  activity: AdminActivity,
+  admin: AdminContent,
+  puzzlePhotoTitles: Map<string, string>,
+) {
+  if (activity.type === "rsvp_created") {
+    return formatTemplate(admin.activities.sentenceTemplates.rsvpCreated, {
+      name: activity.guestName,
+    });
+  }
+
+  if (activity.type === "rsvp_updated") {
+    return formatTemplate(admin.activities.sentenceTemplates.rsvpUpdated, {
+      name: activity.guestName,
+    });
+  }
+
+  return formatTemplate(admin.activities.sentenceTemplates.puzzleUnlocked, {
+    name: activity.guestName,
+    puzzle: activity.photoId
+      ? (puzzlePhotoTitles.get(activity.photoId) ?? admin.activities.unknownPuzzleLabel)
+      : admin.activities.unknownPuzzleLabel,
+  });
 }
 
 function createRsvpCsv(rsvps: AdminRsvp[], admin: AdminContent) {

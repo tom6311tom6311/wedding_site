@@ -80,6 +80,11 @@ export type WeddingContent = {
       description: string;
       emptyLabel: string;
       itemAriaLabel: string;
+      sentenceTemplates: {
+        rsvpCreated: string;
+        rsvpUpdated: string;
+        puzzleUnlocked: string;
+      };
       typeLabels: {
         rsvpCreated: string;
         rsvpUpdated: string;
