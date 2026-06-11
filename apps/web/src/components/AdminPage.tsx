@@ -519,32 +519,6 @@ export function AdminPage({ content }: AdminPageProps) {
               <h2>{admin.puzzle.title}</h2>
               <p>{admin.puzzle.description}</p>
             </div>
-            <section className="admin-leaderboard" aria-labelledby="admin-puzzle-leaderboard-title">
-              <div className="admin-leaderboard__heading">
-                <h3 id="admin-puzzle-leaderboard-title">
-                  {admin.puzzle.leaderboardTitle}
-                </h3>
-                <p>{admin.puzzle.leaderboardDescription}</p>
-              </div>
-              <ol className="admin-leaderboard__list">
-                {puzzleRows.map((rsvp, index) => (
-                  <li className="admin-leaderboard__item" key={rsvp.id}>
-                    <span className="admin-leaderboard__rank">
-                      {formatTemplate(admin.puzzle.leaderboardRankLabel, {
-                        rank: String(index + 1),
-                      })}
-                    </span>
-                    <strong>{rsvp.name}</strong>
-                    <span>
-                      {formatTemplate(admin.puzzle.progressFormat, {
-                        count: String(rsvp.unlockedCount),
-                        total: String(puzzlePhotos.length),
-                      })}
-                    </span>
-                  </li>
-                ))}
-              </ol>
-            </section>
             <div className="admin-progress-wrap">
               <table className="admin-progress-table">
                 <thead>
@@ -559,13 +533,23 @@ export function AdminPage({ content }: AdminPageProps) {
                   </tr>
                 </thead>
                 <tbody>
-                  {puzzleRows.map((rsvp) => {
+                  {puzzleRows.map((rsvp, index) => {
                     const solvedSet = new Set(rsvp.unlockedPhotoIds);
+                    const rank = index + 1;
 
                     return (
                       <tr key={rsvp.id}>
                         <th className="admin-progress-table__guest" scope="row">
-                          {rsvp.name}
+                          <span className="admin-progress-table__guest-name">
+                            {rank <= 3 ? (
+                              <span className="admin-leaderboard__rank">
+                                {formatTemplate(admin.puzzle.leaderboardRankLabel, {
+                                  rank: String(rank),
+                                })}
+                              </span>
+                            ) : null}
+                            <span>{rsvp.name}</span>
+                          </span>
                         </th>
                         <td>
                           {formatTemplate(admin.puzzle.progressFormat, {

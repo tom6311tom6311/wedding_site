@@ -3092,65 +3092,9 @@ a:focus:not(:focus-visible) {
   text-align: center;
 }
 
-.admin-leaderboard {
-  display: grid;
-  gap: 0.8rem;
-  border-bottom: 1px solid #eee8df;
-  padding: 1rem;
-  background: #fbf8f3;
-}
-
-.admin-leaderboard__heading {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.admin-leaderboard__heading h3,
-.admin-leaderboard__heading p {
-  margin: 0;
-}
-
-.admin-leaderboard__heading h3 {
-  color: #1f2933;
-  font-size: 1.08rem;
-}
-
-.admin-leaderboard__heading p {
-  color: #66727e;
-  line-height: 1.45;
-}
-
-.admin-leaderboard__list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
-  gap: 0.55rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.admin-leaderboard__item {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 0.65rem;
-  border: 1px solid #d7d1c7;
-  border-radius: 8px;
-  padding: 0.65rem 0.75rem;
-  background: #fffdf9;
-}
-
-.admin-leaderboard__item strong {
-  min-width: 0;
-  overflow: hidden;
-  color: #1f2933;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .admin-leaderboard__rank {
+  display: inline-flex;
+  flex: 0 0 auto;
   border-radius: 999px;
   padding: 0.2rem 0.48rem;
   background: #e3eee9;
@@ -3165,6 +3109,19 @@ a:focus:not(:focus-visible) {
   z-index: 2;
   min-width: 12rem;
   background: inherit;
+}
+
+.admin-progress-table__guest-name {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.admin-progress-table__guest-name > span:last-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .admin-progress-table thead .admin-progress-table__guest {
@@ -3415,19 +3372,6 @@ a:focus:not(:focus-visible) {
 
   .admin-progress-wrap {
     max-width: 100%;
-  }
-
-  .admin-leaderboard {
-    padding: 0.85rem;
-  }
-
-  .admin-leaderboard__heading {
-    display: grid;
-    gap: 0.25rem;
-  }
-
-  .admin-leaderboard__list {
-    grid-template-columns: minmax(0, 1fr);
   }
 
   .admin-progress-table {

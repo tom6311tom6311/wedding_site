@@ -71,8 +71,6 @@ export type WeddingContent = {
       solvedAriaLabel: string;
       unsolvedAriaLabel: string;
       progressFormat: string;
-      leaderboardTitle: string;
-      leaderboardDescription: string;
       leaderboardRankLabel: string;
     };
     activities: {

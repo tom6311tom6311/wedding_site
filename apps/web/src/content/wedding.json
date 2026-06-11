@@ -50,8 +50,6 @@
       "solvedAriaLabel": "Solved",
       "unsolvedAriaLabel": "Unsolved",
       "progressFormat": "{count}/{total}",
-      "leaderboardTitle": "Puzzle leaderboard",
-      "leaderboardDescription": "Top guests by solved puzzle count.",
       "leaderboardRankLabel": "Rank {rank}"
     },
     "activities": {
