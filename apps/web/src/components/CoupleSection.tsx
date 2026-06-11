@@ -1,6 +1,5 @@
 import type { WeddingContent } from "../content/types";
 import type { ImageAsset } from "../content/types";
-import flowerBouquet from "../assets/decorations/flower-bouquet.png";
 
 type CoupleSectionProps = {
   couple: WeddingContent["couple"];
@@ -28,15 +27,6 @@ export function CoupleSection({ couple }: CoupleSectionProps) {
           {couple.people.map((person, index) => (
             <article className="couple-person" key={`${person.role}-${person.name}`}>
               <div className="couple-copy">
-                {index === 0 ? (
-                  <img
-                    className="section-decor section-decor--couple"
-                    src={flowerBouquet}
-                    alt=""
-                    aria-hidden="true"
-                    loading="lazy"
-                  />
-                ) : null}
                 <p>{person.role}</p>
                 <h3>{person.name}</h3>
                 {person.introduction ? (

@@ -12,11 +12,32 @@ type StoryImages = WeddingContent["story"]["fallbackImages"];
 export function StorySection({ story }: StorySectionProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isStoryOpen, setIsStoryOpen] = useState(!story.cover);
+  const [turnDirection, setTurnDirection] = useState<"next" | "previous">("next");
+  const [isTurningPage, setIsTurningPage] = useState(false);
   const activeMilestone = story.milestones[activeIndex];
   const totalMilestones = story.milestones.length;
   const visiblePileMilestones = story.milestones.slice(activeIndex + 1, activeIndex + 4);
 
+  useEffect(() => {
+    if (!isTurningPage) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      setIsTurningPage(false);
+    }, 1700);
+
+    return () => window.clearTimeout(timer);
+  }, [activeIndex, isStoryOpen, isTurningPage]);
+
+  function handleTurnAnimationEnd() {
+    setIsTurningPage(false);
+  }
+
   function showPreviousCard() {
+    setTurnDirection("previous");
+    setIsTurningPage(true);
+
     if (activeIndex === 0 && story.cover) {
       setIsStoryOpen(false);
       return;
@@ -26,6 +47,8 @@ export function StorySection({ story }: StorySectionProps) {
   }
 
   function showNextCard() {
+    setTurnDirection("next");
+    setIsTurningPage(true);
     setActiveIndex((current) => Math.min(totalMilestones - 1, current + 1));
   }
 
@@ -56,17 +79,29 @@ export function StorySection({ story }: StorySectionProps) {
                   milestone={activeMilestone}
                   fallbackImages={story.fallbackImages}
                   activeIndex={activeIndex}
+                  turnDirection={turnDirection}
+                  isTurningPage={isTurningPage}
+                  onTurnAnimationEnd={handleTurnAnimationEnd}
                   key={`${activeMilestone.year}-${activeMilestone.title}`}
                 />
               </>
             ) : story.cover ? (
-              <StoryCover image={story.cover.image} />
+              <StoryCover
+                image={story.cover.image}
+                turnDirection={turnDirection}
+                isTurningPage={isTurningPage}
+                onTurnAnimationEnd={handleTurnAnimationEnd}
+              />
             ) : null}
           </div>
           {isStoryOpen ? (
             <div className="story-controls" aria-label="故事切換">
               {activeIndex > 0 || story.cover ? (
-                <button type="button" onClick={showPreviousCard} aria-label="上一段故事">
+                <button
+                  type="button"
+                  onClick={showPreviousCard}
+                  aria-label="上一段故事"
+                >
                   ‹
                 </button>
               ) : (
@@ -81,7 +116,11 @@ export function StorySection({ story }: StorySectionProps) {
                 ))}
               </div>
               {activeIndex < totalMilestones - 1 ? (
-                <button type="button" onClick={showNextCard} aria-label="下一段故事">
+                <button
+                  type="button"
+                  onClick={showNextCard}
+                  aria-label="下一段故事"
+                >
                   ›
                 </button>
               ) : (
@@ -92,7 +131,11 @@ export function StorySection({ story }: StorySectionProps) {
             <div className="story-controls story-controls--cover">
               <button
                 type="button"
-                onClick={() => setIsStoryOpen(true)}
+                onClick={() => {
+                  setTurnDirection("next");
+                  setIsTurningPage(true);
+                  setIsStoryOpen(true);
+                }}
                 aria-label={story.cover.openAriaLabel}
               >
                 ›
@@ -105,9 +148,28 @@ export function StorySection({ story }: StorySectionProps) {
   );
 }
 
-function StoryCover({ image }: { image: StoryImages[number] }) {
+function StoryCover({
+  image,
+  turnDirection,
+  isTurningPage,
+  onTurnAnimationEnd,
+}: {
+  image: StoryImages[number];
+  turnDirection: "next" | "previous";
+  isTurningPage: boolean;
+  onTurnAnimationEnd: () => void;
+}) {
   return (
-    <article className="story-card story-card--cover">
+    <article
+      className={[
+        "story-card",
+        "story-card--cover",
+        isTurningPage ? `story-card--turn-${turnDirection}` : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      onAnimationEnd={onTurnAnimationEnd}
+    >
       <img
         className={image.fit === "contain" ? "story-cover-image--contain" : ""}
         src={image.src}
@@ -161,10 +223,16 @@ function StoryCard({
   milestone,
   fallbackImages,
   activeIndex,
+  turnDirection,
+  isTurningPage,
+  onTurnAnimationEnd,
 }: {
   milestone: StoryMilestone;
   fallbackImages: StoryImages;
   activeIndex: number;
+  turnDirection: "next" | "previous";
+  isTurningPage: boolean;
+  onTurnAnimationEnd: () => void;
 }) {
   const images = useMemo(
     () => (milestone.images?.length ? milestone.images : fallbackImages),
@@ -189,7 +257,15 @@ function StoryCard({
   }, [images.length]);
 
   return (
-    <article className="story-card">
+    <article
+      className={[
+        "story-card",
+        isTurningPage ? `story-card--turn-${turnDirection}` : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      onAnimationEnd={onTurnAnimationEnd}
+    >
       <figure className="story-photo-frame">
         {images.map((image, index) => (
           <img
@@ -219,8 +295,16 @@ function StoryCard({
       <div className="story-card__copy">
         <h3>{milestone.title}</h3>
         <span>{milestone.year}</span>
-        <p>{milestone.body}</p>
+        <p>
+          {toStoryBodyLines(milestone.body).map((line, index) => (
+            <span key={`${line}-${index}`}>{line}</span>
+          ))}
+        </p>
       </div>
     </article>
   );
+}
+
+function toStoryBodyLines(body: StoryMilestone["body"]) {
+  return Array.isArray(body) ? body : [body];
 }

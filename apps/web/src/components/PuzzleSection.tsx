@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { FormEvent } from "react";
+import type { CSSProperties, FormEvent } from "react";
 import type { WeddingContent } from "../content/types";
 
 type PuzzleContent = NonNullable<WeddingContent["puzzle"]>;
@@ -29,6 +29,12 @@ type PuzzleIdentifyResponse = PuzzleMeResponse & {
   browserToken: string;
 };
 
+type ApiErrorResponse = {
+  error?: string;
+  message?: string;
+  fields?: string[];
+};
+
 type PuzzleRank = {
   rank: number;
   unlockedCount: number;
@@ -47,6 +53,7 @@ type StoredPuzzleState = {
 const RSVP_API_BASE_URL =
   import.meta.env.VITE_RSVP_API_BASE_URL ?? "http://localhost:4000";
 const RSVP_BROWSER_TOKEN_STORAGE_KEY = "wedding-site:rsvp-token";
+const RSVP_TOKEN_UPDATED_EVENT = "wedding-site:rsvp-token-updated";
 const PUZZLE_STATE_STORAGE_KEY_PREFIX = "wedding-site:puzzle-state:v3";
 const DEFAULT_PUZZLE_DIFFICULTY_TIERS: PuzzleDifficultyTier[] = [
   { startsAt: 1, rows: 2, columns: 3 },
@@ -73,6 +80,7 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
   const [isSolved, setIsSolved] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [isIdentifying, setIsIdentifying] = useState(false);
+  const [isLookupOpen, setIsLookupOpen] = useState(false);
   const unlockedSet = useMemo(() => new Set(unlockedPhotoIds), [unlockedPhotoIds]);
   const unlockedPhotos = useMemo(
     () => puzzle.photos.filter((photo) => unlockedSet.has(photo.id)),
@@ -84,15 +92,15 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
   const activePhotoAspect = activePhoto ? (photoAspects[activePhoto.id] ?? 4 / 5) : 4 / 5;
 
   useEffect(() => {
-    const browserToken = window.localStorage.getItem(RSVP_BROWSER_TOKEN_STORAGE_KEY);
-
-    if (!browserToken) {
-      return;
-    }
-
     let cancelled = false;
 
     async function loadPuzzleState() {
+      const browserToken = window.localStorage.getItem(RSVP_BROWSER_TOKEN_STORAGE_KEY);
+
+      if (!browserToken) {
+        return;
+      }
+
       try {
         const response = await fetch(`${RSVP_API_BASE_URL}/api/puzzle/me`, {
           headers: {
@@ -116,10 +124,16 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
       }
     }
 
+    function handleTokenUpdated() {
+      void loadPuzzleState();
+    }
+
     void loadPuzzleState();
+    window.addEventListener(RSVP_TOKEN_UPDATED_EVENT, handleTokenUpdated);
 
     return () => {
       cancelled = true;
+      window.removeEventListener(RSVP_TOKEN_UPDATED_EVENT, handleTokenUpdated);
     };
   }, []);
 
@@ -319,6 +333,13 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
         }),
       });
 
+      if (response.status === 400) {
+        const errorBody = (await response.json().catch(() => null)) as ApiErrorResponse | null;
+
+        setStatus(formatIdentifyValidationMessage(errorBody?.fields, labels));
+        return;
+      }
+
       if (response.status === 404) {
         setStatus(labels.identifyNotFoundMessage);
         return;
@@ -331,9 +352,11 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
       const body = (await response.json()) as PuzzleIdentifyResponse;
 
       window.localStorage.setItem(RSVP_BROWSER_TOKEN_STORAGE_KEY, body.browserToken);
+      window.dispatchEvent(new Event(RSVP_TOKEN_UPDATED_EVENT));
       setGuest(body.rsvp);
       setUnlockedPhotoIds(body.unlockedPhotoIds);
       setPuzzleRank(body.puzzleRank);
+      setIsLookupOpen(false);
       form.reset();
     } catch {
       setStatus(labels.identifyErrorMessage);
@@ -351,100 +374,120 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
           <p>{puzzle.subtitle}</p>
         </div>
 
-        <div className="puzzle-rank">
-          <div>
-            <span>{guest ? guest.name : puzzle.lockedLabel}</span>
-            <strong>
-              {puzzleRank
-                ? formatLabel(labels.rankFormat, { rank: puzzleRank.rank })
-                : labels.rankUnavailable}
-            </strong>
-          </div>
-          <div>
-            <span>{labels.progressLabel}</span>
-            <strong>
-              {hasSolvedAll
-                ? formatLabel(labels.solvedCountWithTotal, {
-                    count: unlockedPhotoIds.length,
-                    total: puzzle.photos.length,
-                  })
-                : formatLabel(labels.solvedCount, { count: unlockedPhotoIds.length })}
-            </strong>
-          </div>
-          <p>
-            {puzzleRank
-              ? puzzleRank.photosToNextRank === null
-                ? puzzleRank.photosAheadOfSecondPlace === null
-                  ? labels.firstRankMessage
-                  : formatLabel(labels.firstRankLeadMessage, {
-                      lead: puzzleRank.photosAheadOfSecondPlace,
+        {guest ? (
+          <div className="puzzle-rank">
+            <div>
+              <span>{guest.name}</span>
+              <strong>
+                {puzzleRank
+                  ? formatLabel(labels.rankFormat, { rank: puzzleRank.rank })
+                  : labels.rankUnavailable}
+              </strong>
+            </div>
+            <div>
+              <span>{labels.progressLabel}</span>
+              <strong>
+                {hasSolvedAll
+                  ? formatLabel(labels.solvedCountWithTotal, {
+                      count: unlockedPhotoIds.length,
+                      total: puzzle.photos.length,
                     })
-                : formatLabel(labels.nextRankMessage, { gap: puzzleRank.photosToNextRank })
-              : labels.joinRankMessage}
-          </p>
-          <button type="button" onClick={() => setIsClosetOpen(true)}>
-            {labels.closetButton}
-          </button>
-        </div>
+                  : formatLabel(labels.solvedCount, { count: unlockedPhotoIds.length })}
+              </strong>
+            </div>
+            <p>
+              {puzzleRank
+                ? puzzleRank.photosToNextRank === null
+                  ? puzzleRank.photosAheadOfSecondPlace === null
+                    ? labels.firstRankMessage
+                    : formatLabel(labels.firstRankLeadMessage, {
+                        lead: puzzleRank.photosAheadOfSecondPlace,
+                      })
+                  : formatLabel(labels.nextRankMessage, { gap: puzzleRank.photosToNextRank })
+                : labels.joinRankMessage}
+            </p>
+            <button type="button" onClick={() => setIsClosetOpen(true)}>
+              {labels.closetButton}
+            </button>
+          </div>
+        ) : null}
 
         {!guest ? (
           <div className="puzzle-identify">
             <div>
               <h3>{puzzle.identifyTitle}</h3>
               <p>{puzzle.identifyBody}</p>
-              <a href="#rsvp">{puzzle.rsvpLinkLabel}</a>
+              <div className="puzzle-identify__actions">
+                <a className="puzzle-identify__primary" href="#rsvp">
+                  {puzzle.rsvpLinkLabel}
+                </a>
+                <button
+                  className="puzzle-identify__secondary"
+                  type="button"
+                  onClick={() => {
+                    setIsLookupOpen((current) => !current);
+                    setStatus(null);
+                  }}
+                >
+                  {isLookupOpen ? labels.closeLabel : labels.identifySubmitLabel}
+                </button>
+              </div>
             </div>
-            <form onSubmit={handleIdentify}>
-              <input name="name" placeholder={labels.namePlaceholder} required />
-              <input
-                name="phone"
-                placeholder={labels.phonePlaceholder}
-                inputMode="tel"
-                maxLength={13}
-                required
-              />
-              <button type="submit" disabled={isIdentifying}>
-                {isIdentifying ? labels.identifyingLabel : labels.identifySubmitLabel}
-              </button>
-            </form>
+            {isLookupOpen ? (
+              <form onSubmit={handleIdentify}>
+                <input name="name" placeholder={labels.namePlaceholder} required />
+                <input
+                  name="phone"
+                  placeholder={labels.phonePlaceholder}
+                  inputMode="tel"
+                  maxLength={13}
+                  required
+                />
+                <button type="submit" disabled={isIdentifying}>
+                  {isIdentifying ? labels.identifyingLabel : labels.identifySubmitLabel}
+                </button>
+              </form>
+            ) : null}
           </div>
         ) : null}
 
         {status ? <p className="puzzle-message">{status}</p> : null}
 
-        <div className="puzzle-stage">
-          {nextPhoto ? (
-            <article className="puzzle-card puzzle-card--next">
-              <div className="puzzle-card__body">
-                <h3>{labels.nextPhotoLabel}</h3>
-                <strong>{nextPhoto.title}</strong>
-                {nextPhoto.hint ? <p>{nextPhoto.hint}</p> : null}
-              </div>
-              <div className="puzzle-card__image">
-                <img
-                  src={nextPhoto.src}
-                  alt={nextPhoto.alt}
-                  onLoad={(event) => rememberPhotoAspect(nextPhoto, event.currentTarget)}
-                />
-                <button
-                  className="puzzle-card__start"
-                  type="button"
-                  onClick={() => startPuzzle(nextPhoto)}
-                >
-                  {puzzle.startLabel}
+        {guest ? (
+          <div className="puzzle-stage">
+            {nextPhoto ? (
+              <article className="puzzle-card puzzle-card--next">
+                <div className="puzzle-card__body">
+                  <h3>{labels.nextPhotoLabel}</h3>
+                  <strong>{nextPhoto.title}</strong>
+                  {nextPhoto.hint ? <p>{nextPhoto.hint}</p> : null}
+                </div>
+                <div className="puzzle-card__image">
+                  <img
+                    src={nextPhoto.src}
+                    alt={nextPhoto.alt}
+                    onLoad={(event) => rememberPhotoAspect(nextPhoto, event.currentTarget)}
+                  />
+                  <button
+                    className="puzzle-card__start"
+                    type="button"
+                    onClick={() => startPuzzle(nextPhoto)}
+                  >
+                    {puzzle.startLabel}
+                  </button>
+                </div>
+              </article>
+            ) : (
+              <div className="puzzle-complete">
+                <h3>{labels.allSolvedTitle}</h3>
+                <p>{formatLabel(labels.allSolvedBody, { total: puzzle.photos.length })}</p>
+                <button type="button" onClick={() => setIsClosetOpen(true)}>
+                  {labels.closetButton}
                 </button>
               </div>
-            </article>
-          ) : (
-            <div className="puzzle-complete">
-              <h3>{labels.allSolvedTitle}</h3>
-              <p>{formatLabel(labels.allSolvedBody, { total: puzzle.photos.length })}</p>
-              <button type="button" onClick={() => setIsClosetOpen(true)}>
-                {labels.closetButton}
-              </button>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        ) : null}
       </div>
 
       {activePhoto ? (
@@ -476,10 +519,11 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
             <div
               className="puzzle-board"
               style={{
+                "--puzzle-photo-aspect": activePhotoAspect,
                 gridTemplateColumns: `repeat(${activePuzzleDimensions.columns}, 1fr)`,
                 gridTemplateRows: `repeat(${activePuzzleDimensions.rows}, 1fr)`,
                 aspectRatio: activePhotoAspect,
-              }}
+              } as CSSProperties}
             >
               {tileOrder.map((sourceIndex, tileIndex) => (
                 <button
@@ -729,6 +773,21 @@ function clearStoredPuzzleState(photoId: string) {
   } catch {
     // Ignore storage failures.
   }
+}
+
+function formatIdentifyValidationMessage(
+  fields: string[] | undefined,
+  labels: PuzzleContent["labels"],
+) {
+  const messages = Array.from(new Set(fields ?? []))
+    .map((field) =>
+      field === "name" || field === "phone"
+        ? labels.identifyValidationMessages[field]
+        : null,
+    )
+    .filter((message): message is string => Boolean(message));
+
+  return messages.join(" ") || labels.identifyDefaultValidationMessage;
 }
 
 function getPuzzleStateStorageKey(photoId: string) {

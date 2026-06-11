@@ -15,16 +15,22 @@ type RsvpStatus = {
 
 type RsvpPayload = {
   name: string;
+  email: string;
   phone: string;
+  identity: string;
   attendance: string;
+  ceremonyAttendance: string;
   guestCount: number;
   message: string;
 };
 
 type RsvpFormValues = {
   name: string;
+  email: string;
   phone: string;
+  identity: string;
   attendance: string;
+  ceremonyAttendance: string;
   guests: string;
   message: string;
 };
@@ -33,6 +39,7 @@ const guestCountOptions = Array.from({ length: 11 }, (_, index) => String(index)
 const RSVP_API_BASE_URL =
   import.meta.env.VITE_RSVP_API_BASE_URL ?? "http://localhost:4000";
 const RSVP_BROWSER_TOKEN_STORAGE_KEY = "wedding-site:rsvp-token";
+const RSVP_TOKEN_UPDATED_EVENT = "wedding-site:rsvp-token-updated";
 
 export function RsvpSection({ rsvp }: RsvpSectionProps) {
   const formRef = useRef<HTMLFormElement>(null);
@@ -41,9 +48,21 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [invalidFields, setInvalidFields] = useState<Set<string>>(() => new Set());
   const [status, setStatus] = useState<RsvpStatus | null>(null);
-  const currentValues = toComparableValues(initialValues);
+  const currentValues = normalizeConditionalValues(toComparableValues(initialValues), rsvp);
+  const savedComparableValues = savedValues
+    ? normalizeConditionalValues(savedValues, rsvp)
+    : null;
+  const isAttending = isAttendingResponse(currentValues, rsvp);
+  const visibleFields = rsvp.fields.filter((field) => {
+    if (field.name === "ceremonyAttendance" || field.name === "guests") {
+      return isAttending;
+    }
+
+    return true;
+  });
   const hasSavedResponse = savedValues !== null;
-  const hasUnsavedChanges = savedValues !== null && !areFormValuesEqual(currentValues, savedValues);
+  const hasUnsavedChanges =
+    savedComparableValues !== null && !areFormValuesEqual(currentValues, savedComparableValues);
   const shouldDisableSubmit = isSubmitting || (hasSavedResponse && !hasUnsavedChanges);
   const submitLabel = isSubmitting
     ? "送出中..."
@@ -52,15 +71,15 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
       : rsvp.submitLabel;
 
   useEffect(() => {
-    const browserToken = window.localStorage.getItem(RSVP_BROWSER_TOKEN_STORAGE_KEY);
-
-    if (!browserToken) {
-      return;
-    }
-
     let cancelled = false;
 
     async function loadStoredRsvp() {
+      const browserToken = window.localStorage.getItem(RSVP_BROWSER_TOKEN_STORAGE_KEY);
+
+      if (!browserToken) {
+        return;
+      }
+
       try {
         const response = await fetch(`${RSVP_API_BASE_URL}/api/rsvp/me`, {
           headers: {
@@ -85,10 +104,16 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
       }
     }
 
+    function handleTokenUpdated() {
+      void loadStoredRsvp();
+    }
+
     void loadStoredRsvp();
+    window.addEventListener(RSVP_TOKEN_UPDATED_EVENT, handleTokenUpdated);
 
     return () => {
       cancelled = true;
+      window.removeEventListener(RSVP_TOKEN_UPDATED_EVENT, handleTokenUpdated);
     };
   }, []);
 
@@ -108,12 +133,15 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
       const formData = new FormData(form);
       const payload = {
         name: String(formData.get("name") ?? ""),
+        email: String(formData.get("email") ?? ""),
         phone: String(formData.get("phone") ?? ""),
+        identity: String(formData.get("identity") ?? ""),
         attendance: String(formData.get("attendance") ?? ""),
-        guestCount: Number(formData.get("guests") ?? 0),
+        ceremonyAttendance: isAttending ? String(formData.get("ceremonyAttendance") ?? "") : "",
+        guestCount: isAttending ? Number(formData.get("guests") ?? 0) : 0,
         message: String(formData.get("message") ?? ""),
       };
-      const validation = validateRsvpPayload(payload);
+      const validation = validateRsvpPayload(payload, isAttending);
 
       if (!validation.isValid) {
         setInvalidFields(validation.invalidFields);
@@ -157,6 +185,7 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
       const nextValues = toFormValues(body.rsvp);
 
       window.localStorage.setItem(RSVP_BROWSER_TOKEN_STORAGE_KEY, body.browserToken);
+      window.dispatchEvent(new Event(RSVP_TOKEN_UPDATED_EVENT));
       setInitialValues(nextValues);
       setSavedValues(nextValues);
       setStatus({
@@ -199,7 +228,7 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
               aria-hidden="true"
               loading="lazy"
             />
-            {rsvp.fields.map((field) => (
+            {visibleFields.map((field) => (
               <div className="rsvp-field" key={field.name}>
                 <span className="rsvp-field__label">
                   {field.label}
@@ -384,8 +413,11 @@ type RsvpApiResponse = {
   browserToken: string;
   rsvp: {
     name: string;
+    email: string;
     phone: string;
+    identity: string;
     attendance: string;
+    ceremonyAttendance: string;
     guestCount: number;
     message: string;
   };
@@ -394,8 +426,11 @@ type RsvpApiResponse = {
 function toFormValues(rsvp: RsvpApiResponse["rsvp"]) {
   return {
     name: rsvp.name,
+    email: rsvp.email,
     phone: rsvp.phone,
+    identity: rsvp.identity,
     attendance: rsvp.attendance,
+    ceremonyAttendance: rsvp.ceremonyAttendance,
     guests: String(rsvp.guestCount),
     message: rsvp.message,
   };
@@ -404,8 +439,11 @@ function toFormValues(rsvp: RsvpApiResponse["rsvp"]) {
 function toComparableValues(values: Record<string, string>): RsvpFormValues {
   return {
     name: values.name ?? "",
+    email: values.email ?? "",
     phone: values.phone ?? "",
+    identity: values.identity ?? "",
     attendance: values.attendance ?? "",
+    ceremonyAttendance: values.ceremonyAttendance ?? "",
     guests: values.guests ?? "0",
     message: values.message ?? "",
   };
@@ -414,14 +452,35 @@ function toComparableValues(values: Record<string, string>): RsvpFormValues {
 function areFormValuesEqual(first: RsvpFormValues, second: RsvpFormValues) {
   return (
     first.name.trim() === second.name.trim() &&
+    first.email.trim() === second.email.trim() &&
     first.phone.trim() === second.phone.trim() &&
+    first.identity === second.identity &&
     first.attendance === second.attendance &&
+    first.ceremonyAttendance === second.ceremonyAttendance &&
     first.guests === second.guests &&
     first.message.trim() === second.message.trim()
   );
 }
 
-function validateRsvpPayload(payload: RsvpPayload) {
+function normalizeConditionalValues(values: RsvpFormValues, rsvp: WeddingContent["rsvp"]) {
+  if (isAttendingResponse(values, rsvp)) {
+    return values;
+  }
+
+  return {
+    ...values,
+    ceremonyAttendance: "",
+    guests: "0",
+  };
+}
+
+function isAttendingResponse(values: Pick<RsvpFormValues, "attendance">, rsvp: WeddingContent["rsvp"]) {
+  const attendingOption = rsvp.fields.find((field) => field.name === "attendance")?.options?.[0];
+
+  return Boolean(attendingOption && values.attendance === attendingOption);
+}
+
+function validateRsvpPayload(payload: RsvpPayload, isAttending: boolean) {
   const invalidFields = new Set<string>();
 
   if (!payload.name.trim()) {
@@ -432,11 +491,26 @@ function validateRsvpPayload(payload: RsvpPayload) {
     invalidFields.add("phone");
   }
 
+  if (payload.email.trim() && !isValidEmailInput(payload.email)) {
+    invalidFields.add("email");
+  }
+
+  if (!payload.identity.trim()) {
+    invalidFields.add("identity");
+  }
+
   if (!payload.attendance.trim()) {
     invalidFields.add("attendance");
   }
 
-  if (!Number.isInteger(payload.guestCount) || payload.guestCount < 0 || payload.guestCount > 10) {
+  if (isAttending && !payload.ceremonyAttendance.trim()) {
+    invalidFields.add("ceremonyAttendance");
+  }
+
+  if (
+    isAttending &&
+    (!Number.isInteger(payload.guestCount) || payload.guestCount < 0 || payload.guestCount > 10)
+  ) {
     invalidFields.add("guests");
   }
 
@@ -453,7 +527,9 @@ function validateRsvpPayload(payload: RsvpPayload) {
     invalidFields,
     message: invalidFields.has("phone")
       ? "請輸入 09 開頭的 10 位數手機號碼。"
-      : "請完成所有必填欄位。",
+      : invalidFields.has("email")
+        ? "請輸入有效的 Email，或將 Email 欄位留空。"
+        : "請完成所有必填欄位。",
   };
 }
 
@@ -461,6 +537,10 @@ function isValidPhoneInput(input: string) {
   const compact = input.trim().replace(/[\s().-]/g, "");
 
   return /^09\d{8}$/.test(compact);
+}
+
+function isValidEmailInput(input: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.trim());
 }
 
 function scrollToPuzzleSection() {

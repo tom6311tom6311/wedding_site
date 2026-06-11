@@ -43,7 +43,18 @@ export function registerPuzzleRoutes(app: FastifyInstance, pool: pg.Pool, config
     const parsed = identifyPayloadSchema.safeParse(request.body);
 
     if (!parsed.success) {
-      return reply.code(400).send({ error: "Invalid identify request" });
+      const fields = Array.from(
+        new Set(
+          parsed.error.issues
+            .map((issue) => issue.path[0])
+            .filter(isIdentifyValidationField),
+        ),
+      );
+
+      return reply.code(400).send({
+        error: "Invalid identify request",
+        fields,
+      });
     }
 
     let normalizedPhone: string;
@@ -51,7 +62,10 @@ export function registerPuzzleRoutes(app: FastifyInstance, pool: pg.Pool, config
     try {
       normalizedPhone = normalizePhone(parsed.data.phone);
     } catch {
-      return reply.code(400).send({ error: "Invalid cellphone number" });
+      return reply.code(400).send({
+        error: "Invalid cellphone number",
+        fields: ["phone"],
+      });
     }
 
     const phoneHash = hmacSha256Hex(normalizedPhone, config.phoneHashSecret);
@@ -118,6 +132,10 @@ export function registerPuzzleRoutes(app: FastifyInstance, pool: pg.Pool, config
       puzzleRank: await getPuzzleRank(pool, rsvp.id),
     };
   });
+}
+
+function isIdentifyValidationField(field: string | number | symbol | undefined) {
+  return field === "name" || field === "phone";
 }
 
 async function findRsvpByBearerToken(

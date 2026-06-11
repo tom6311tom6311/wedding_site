@@ -12,7 +12,9 @@ const rsvpPayloadSchema = z.object({
   name: z.string().trim().min(1).max(120),
   email: z.string().trim().email().max(180).optional().or(z.literal("")),
   phone: z.string().trim().min(8).max(32),
+  identity: z.string().trim().min(1).max(80),
   attendance: z.string().trim().min(1).max(80),
+  ceremonyAttendance: z.string().trim().max(80).optional().or(z.literal("")),
   guestCount: z.coerce.number().int().min(0).max(10),
   message: z.string().trim().max(1000).optional().or(z.literal("")),
 });
@@ -211,9 +213,11 @@ async function saveRsvp(
             name = $5,
             name_key = $6,
             email = NULLIF($7, ''),
-            attendance = $8,
-            guest_count = $9,
-            message = NULLIF($10, ''),
+            identity = $8,
+            attendance = $9,
+            ceremony_attendance = NULLIF($10, ''),
+            guest_count = $11,
+            message = NULLIF($12, ''),
             updated_at = now()
           WHERE id = $1
           RETURNING *
@@ -226,7 +230,9 @@ async function saveRsvp(
           payload.name,
           nameKey,
           payload.email ?? "",
+          payload.identity,
           payload.attendance,
+          payload.ceremonyAttendance ?? "",
           payload.guestCount,
           payload.message ?? "",
         ],
@@ -261,11 +267,13 @@ async function saveRsvp(
           name,
           name_key,
           email,
+          identity,
           attendance,
+          ceremony_attendance,
           guest_count,
           message
         )
-        VALUES ($1, $2, $3, $4, $5, $6, NULLIF($7, ''), $8, $9, NULLIF($10, ''))
+        VALUES ($1, $2, $3, $4, $5, $6, NULLIF($7, ''), $8, $9, NULLIF($10, ''), $11, NULLIF($12, ''))
         RETURNING *
       `,
       [
@@ -276,7 +284,9 @@ async function saveRsvp(
         payload.name,
         nameKey,
         payload.email ?? "",
+        payload.identity,
         payload.attendance,
+        payload.ceremonyAttendance ?? "",
         payload.guestCount,
         payload.message ?? "",
       ],
@@ -302,7 +312,9 @@ function toClientRsvp(row: RsvpRow, _config: AppConfig) {
     email: row.email ?? "",
     phone: row.phone_number,
     phoneMasked: maskPhone(row.phone_number),
+    identity: row.identity ?? "",
     attendance: row.attendance,
+    ceremonyAttendance: row.ceremony_attendance ?? "",
     guestCount: row.guest_count,
     message: row.message ?? "",
     createdAt: row.created_at.toISOString(),

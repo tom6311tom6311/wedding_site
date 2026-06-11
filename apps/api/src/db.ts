@@ -9,7 +9,9 @@ export type RsvpRow = {
   name: string;
   name_key: string;
   email: string | null;
+  identity: string | null;
   attendance: string;
+  ceremony_attendance: string | null;
   guest_count: number;
   message: string | null;
   created_at: Date;
@@ -38,7 +40,9 @@ export async function migrate(pool: pg.Pool) {
       name text NOT NULL,
       name_key text NOT NULL,
       email text,
+      identity text,
       attendance text NOT NULL,
+      ceremony_attendance text,
       guest_count integer NOT NULL CHECK (guest_count >= 0 AND guest_count <= 10),
       message text,
       created_at timestamptz NOT NULL DEFAULT now(),
@@ -61,6 +65,18 @@ export async function migrate(pool: pg.Pool) {
   await pool.query(`
     ALTER TABLE rsvp_responses
     ADD COLUMN IF NOT EXISTS name_key text
+  `);
+  await pool.query(`
+    ALTER TABLE rsvp_responses
+    ADD COLUMN IF NOT EXISTS email text
+  `);
+  await pool.query(`
+    ALTER TABLE rsvp_responses
+    ADD COLUMN IF NOT EXISTS identity text
+  `);
+  await pool.query(`
+    ALTER TABLE rsvp_responses
+    ADD COLUMN IF NOT EXISTS ceremony_attendance text
   `);
   await pool.query(`
     UPDATE rsvp_responses

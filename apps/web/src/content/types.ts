@@ -109,7 +109,7 @@ export type WeddingContent = {
     milestones: Array<{
       year: string;
       title: string;
-      body: string;
+      body: string | string[];
       images?: ImageAsset[];
     }>;
   };
@@ -170,6 +170,11 @@ export type WeddingContent = {
       phonePlaceholder: string;
       identifySubmitLabel: string;
       identifyingLabel: string;
+      identifyValidationMessages: {
+        name: string;
+        phone: string;
+      };
+      identifyDefaultValidationMessage: string;
       identifyNotFoundMessage: string;
       identifyErrorMessage: string;
       unlockErrorMessage: string;

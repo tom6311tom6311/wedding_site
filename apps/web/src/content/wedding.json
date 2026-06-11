@@ -259,6 +259,11 @@
       "phonePlaceholder": "0912345678",
       "identifySubmitLabel": "Find my RSVP",
       "identifyingLabel": "Looking up...",
+      "identifyValidationMessages": {
+        "name": "Name is required.",
+        "phone": "Please enter a valid 10-digit cellphone number."
+      },
+      "identifyDefaultValidationMessage": "Please check your name and cellphone number.",
       "identifyNotFoundMessage": "No matching RSVP was found. Please check your name and cellphone number.",
       "identifyErrorMessage": "Lookup failed. Please try again later.",
       "unlockErrorMessage": "Unlock failed. Please try again later.",
@@ -316,12 +321,40 @@
         "required": true
       },
       {
+        "name": "email",
+        "label": "Email (optional, for reminders closer to the wedding)",
+        "type": "email",
+        "placeholder": "your@email.com"
+      },
+      {
+        "name": "identity",
+        "label": "How do you know us?",
+        "type": "select",
+        "options": [
+          "Groom's friend",
+          "Groom's relative",
+          "Bride's friend",
+          "Bride's relative"
+        ],
+        "required": true
+      },
+      {
         "name": "attendance",
         "label": "Will you attend?",
         "type": "select",
         "options": [
           "Yes, I will be there",
           "Sorry, I cannot make it"
+        ],
+        "required": true
+      },
+      {
+        "name": "ceremonyAttendance",
+        "label": "Will you attend the ceremony?",
+        "type": "select",
+        "options": [
+          "Yes, I will attend the ceremony",
+          "No, I will skip the ceremony"
         ],
         "required": true
       },
