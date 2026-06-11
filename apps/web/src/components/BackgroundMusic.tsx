@@ -6,14 +6,6 @@ type BackgroundMusicProps = {
 };
 
 const MUSIC_CONSENT_STORAGE_KEY = "wedding-site:music-consent";
-const DEFAULT_MUSIC_CONSENT = {
-  eyebrow: "Music",
-  title: "Background music",
-  description:
-    "This invitation can play background music. You can pause or play it again anytime with the button in the lower-right corner.",
-  acceptLabel: "Play music",
-  dismissLabel: "Not now",
-};
 
 export function BackgroundMusic({ music }: BackgroundMusicProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -93,7 +85,7 @@ export function BackgroundMusic({ music }: BackgroundMusicProps) {
   }
 
   const enabledMusic = music;
-  const consent = enabledMusic.consent ?? DEFAULT_MUSIC_CONSENT;
+  const consent = enabledMusic.consent;
 
   async function playMusic() {
     const audio = audioRef.current;
@@ -183,7 +175,7 @@ export function BackgroundMusic({ music }: BackgroundMusicProps) {
       <button
         className={`music-control${isPlaying ? " music-control--playing" : ""}`}
         type="button"
-        aria-label={isPlaying ? "Pause background music" : "Play background music"}
+        aria-label={isPlaying ? consent.pauseAriaLabel : consent.playAriaLabel}
         aria-pressed={isPlaying}
         onClick={toggleMusic}
       >

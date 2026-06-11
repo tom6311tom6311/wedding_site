@@ -65,9 +65,9 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
     savedComparableValues !== null && !areFormValuesEqual(currentValues, savedComparableValues);
   const shouldDisableSubmit = isSubmitting || (hasSavedResponse && !hasUnsavedChanges);
   const submitLabel = isSubmitting
-    ? "送出中..."
+    ? rsvp.submittingLabel
     : hasSavedResponse
-      ? "更新回覆"
+      ? rsvp.updateLabel
       : rsvp.submitLabel;
 
   useEffect(() => {
@@ -141,7 +141,11 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
         guestCount: isAttending ? Number(formData.get("guests") ?? 0) : 0,
         message: String(formData.get("message") ?? ""),
       };
-      const validation = validateRsvpPayload(payload, isAttending);
+      const validation = validateRsvpPayload(
+        payload,
+        isAttending,
+        rsvp.validationMessages,
+      );
 
       if (!validation.isValid) {
         setInvalidFields(validation.invalidFields);
@@ -172,7 +176,7 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
       if (response.status === 409) {
         setStatus({
           kind: "error",
-          message: "已有相同姓名或手機的回覆，請確認姓名與手機號碼皆正確。",
+          message: rsvp.statusMessages.duplicate,
         });
         return;
       }
@@ -190,13 +194,15 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
       setSavedValues(nextValues);
       setStatus({
         kind: "success",
-        message: hasSavedResponse ? "已更新您的回覆。" : "已收到您的回覆，謝謝！",
+        message: hasSavedResponse
+          ? rsvp.statusMessages.updateSuccess
+          : rsvp.statusMessages.submitSuccess,
       });
       window.requestAnimationFrame(() => scrollToPuzzleSection());
     } catch {
       setStatus({
         kind: "error",
-        message: "送出失敗，請稍後再試。",
+        message: rsvp.statusMessages.submitError,
       });
     } finally {
       setIsSubmitting(false);
@@ -233,7 +239,7 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
                 <span className="rsvp-field__label">
                   {field.label}
                   {field.required ? (
-                    <span className="rsvp-field__required" aria-label="required">
+                    <span className="rsvp-field__required" aria-label={rsvp.requiredAriaLabel}>
                       *
                     </span>
                   ) : null}
@@ -270,7 +276,7 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
                   <RsvpSelect
                     name={field.name}
                     options={field.options ?? []}
-                    placeholder="請選擇"
+                    placeholder={rsvp.selectPlaceholder}
                     value={initialValues[field.name] ?? ""}
                     required={field.required}
                     invalid={invalidFields.has(field.name)}
@@ -480,7 +486,11 @@ function isAttendingResponse(values: Pick<RsvpFormValues, "attendance">, rsvp: W
   return Boolean(attendingOption && values.attendance === attendingOption);
 }
 
-function validateRsvpPayload(payload: RsvpPayload, isAttending: boolean) {
+function validateRsvpPayload(
+  payload: RsvpPayload,
+  isAttending: boolean,
+  validationMessages: WeddingContent["rsvp"]["validationMessages"],
+) {
   const invalidFields = new Set<string>();
 
   if (!payload.name.trim()) {
@@ -526,10 +536,10 @@ function validateRsvpPayload(payload: RsvpPayload, isAttending: boolean) {
     isValid: false,
     invalidFields,
     message: invalidFields.has("phone")
-      ? "請輸入 09 開頭的 10 位數手機號碼。"
+      ? validationMessages.phone
       : invalidFields.has("email")
-        ? "請輸入有效的 Email，或將 Email 欄位留空。"
-        : "請完成所有必填欄位。",
+        ? validationMessages.email
+        : validationMessages.required,
   };
 }
 

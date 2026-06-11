@@ -95,12 +95,12 @@ export function StorySection({ story }: StorySectionProps) {
             ) : null}
           </div>
           {isStoryOpen ? (
-            <div className="story-controls" aria-label="故事切換">
+            <div className="story-controls" aria-label={story.controls.label}>
               {activeIndex > 0 || story.cover ? (
                 <button
                   type="button"
                   onClick={showPreviousCard}
-                  aria-label="上一段故事"
+                  aria-label={story.controls.previousAriaLabel}
                 >
                   ‹
                 </button>
@@ -119,7 +119,7 @@ export function StorySection({ story }: StorySectionProps) {
                 <button
                   type="button"
                   onClick={showNextCard}
-                  aria-label="下一段故事"
+                  aria-label={story.controls.nextAriaLabel}
                 >
                   ›
                 </button>

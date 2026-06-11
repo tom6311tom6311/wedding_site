@@ -80,7 +80,7 @@ export function ScheduleSection({ schedule }: ScheduleSectionProps) {
                       key={image.src}
                       type="button"
                       onClick={() => setSelectedImage(image)}
-                      aria-label={`放大檢視 ${image.alt}`}
+                      aria-label={schedule.imageOpenAriaLabel.replace("{alt}", image.alt)}
                     >
                       <img
                         className="schedule-photo"
@@ -102,7 +102,7 @@ export function ScheduleSection({ schedule }: ScheduleSectionProps) {
               )}
             </article>
           ))}
-          <p className="schedule-ending">Happy ending</p>
+          <p className="schedule-ending">{schedule.endingLabel}</p>
         </div>
       </div>
       {selectedImage ? (
@@ -117,7 +117,7 @@ export function ScheduleSection({ schedule }: ScheduleSectionProps) {
             className="image-viewer__close"
             type="button"
             onClick={() => setSelectedImage(null)}
-            aria-label="關閉圖片"
+            aria-label={schedule.imageCloseAriaLabel}
           >
             ×
           </button>

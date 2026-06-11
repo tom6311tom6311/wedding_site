@@ -8,6 +8,7 @@ type DetailsSectionProps = {
 export function DetailsSection({ venue }: DetailsSectionProps) {
   const mapQuery = encodeURIComponent(`${venue.name} ${venue.address}`);
   const mapEmbedUrl = `https://www.google.com/maps?q=${mapQuery}&output=embed`;
+  const mapAriaLabel = venue.mapAriaLabel.replace("{name}", venue.name);
 
   return (
     <section className="page-section details-section" id="details">
@@ -45,10 +46,10 @@ export function DetailsSection({ venue }: DetailsSectionProps) {
             </div>
           </article>
 
-          <article className="detail-map-panel" aria-label={`${venue.name} map`}>
+          <article className="detail-map-panel" aria-label={mapAriaLabel}>
             <iframe
               src={mapEmbedUrl}
-              title={`${venue.name} map`}
+              title={mapAriaLabel}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
             />
@@ -58,7 +59,7 @@ export function DetailsSection({ venue }: DetailsSectionProps) {
               target="_blank"
               rel="noreferrer"
             >
-              開啟地圖
+              {venue.mapLabel}
             </a>
           </article>
         </div>

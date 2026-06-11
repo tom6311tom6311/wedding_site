@@ -14,7 +14,9 @@
       "title": "Background music",
       "description": "This invitation can play background music. You can pause or play it again anytime with the button in the lower-right corner.",
       "acceptLabel": "Play music",
-      "dismissLabel": "Not now"
+      "dismissLabel": "Not now",
+      "playAriaLabel": "Play background music",
+      "pauseAriaLabel": "Pause background music"
     }
   },
   "hero": {
@@ -135,6 +137,11 @@
         "alt": "Wedding story photo"
       }
     ],
+    "controls": {
+      "label": "Story controls",
+      "previousAriaLabel": "Previous story",
+      "nextAriaLabel": "Next story"
+    },
     "milestones": [
       {
         "year": "2019",
@@ -158,6 +165,8 @@
     "name": "The Garden House",
     "address": "No. 100, Love Road, Taipei City",
     "mapUrl": "https://maps.google.com",
+    "mapLabel": "Open map",
+    "mapAriaLabel": "{name} map",
     "notes": [
       "Ceremony and reception will take place at the same venue.",
       "Please arrive 20 minutes before the ceremony begins.",
@@ -181,6 +190,9 @@
   "schedule": {
     "eyebrow": "Schedule",
     "title": "Wedding day flow",
+    "endingLabel": "Happy ending",
+    "imageOpenAriaLabel": "View larger image: {alt}",
+    "imageCloseAriaLabel": "Close image",
     "events": [
       {
         "time": "15:30",
@@ -305,6 +317,21 @@
     "title": "RSVP",
     "subtitle": "Let us know if you can make it.",
     "submitLabel": "Send RSVP",
+    "submittingLabel": "Sending...",
+    "updateLabel": "Update RSVP",
+    "validationMessages": {
+      "phone": "Please enter a 10-digit cellphone number starting with 09.",
+      "email": "Please enter a valid email address, or leave the email field blank.",
+      "required": "Please complete all required fields."
+    },
+    "statusMessages": {
+      "duplicate": "A response with the same name or cellphone number already exists. Please check both fields.",
+      "submitSuccess": "We received your RSVP. Thank you!",
+      "updateSuccess": "Your RSVP has been updated.",
+      "submitError": "Failed to submit RSVP. Please try again later."
+    },
+    "selectPlaceholder": "Please select",
+    "requiredAriaLabel": "required",
     "fields": [
       {
         "name": "name",

@@ -30,12 +30,14 @@ export type WeddingContent = {
     title: string;
     loop?: boolean;
     volume?: number;
-    consent?: {
+    consent: {
       eyebrow: string;
       title: string;
       description: string;
       acceptLabel: string;
       dismissLabel: string;
+      playAriaLabel: string;
+      pauseAriaLabel: string;
     };
   };
   hero: {
@@ -105,6 +107,11 @@ export type WeddingContent = {
       image: ImageAsset;
       openAriaLabel: string;
     };
+    controls: {
+      label: string;
+      previousAriaLabel: string;
+      nextAriaLabel: string;
+    };
     fallbackImages: ImageAsset[];
     milestones: Array<{
       year: string;
@@ -118,6 +125,8 @@ export type WeddingContent = {
     name: string;
     address: string;
     mapUrl: string;
+    mapLabel: string;
+    mapAriaLabel: string;
     notes: string[];
     directions: Array<{
       title: string;
@@ -127,6 +136,9 @@ export type WeddingContent = {
   schedule: {
     eyebrow: string;
     title: string;
+    endingLabel: string;
+    imageOpenAriaLabel: string;
+    imageCloseAriaLabel: string;
     events: Array<{
       time: string;
       title: string;
@@ -200,6 +212,21 @@ export type WeddingContent = {
     title: string;
     subtitle: string;
     submitLabel: string;
+    submittingLabel: string;
+    updateLabel: string;
+    validationMessages: {
+      phone: string;
+      email: string;
+      required: string;
+    };
+    statusMessages: {
+      duplicate: string;
+      submitSuccess: string;
+      updateSuccess: string;
+      submitError: string;
+    };
+    selectPlaceholder: string;
+    requiredAriaLabel: string;
     fields: Array<{
       name: string;
       label: string;
