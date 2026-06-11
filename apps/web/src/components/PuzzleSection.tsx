@@ -81,6 +81,7 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
   const [status, setStatus] = useState<string | null>(null);
   const [isIdentifying, setIsIdentifying] = useState(false);
   const [isLookupOpen, setIsLookupOpen] = useState(false);
+  const [isPuzzleHelpOpen, setIsPuzzleHelpOpen] = useState(false);
   const unlockedSet = useMemo(() => new Set(unlockedPhotoIds), [unlockedPhotoIds]);
   const unlockedPhotos = useMemo(
     () => puzzle.photos.filter((photo) => unlockedSet.has(photo.id)),
@@ -176,6 +177,7 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
     }
 
     setStatus(null);
+    setIsPuzzleHelpOpen(false);
     setActivePhoto(photo);
     setViewingPhoto(null);
 
@@ -203,6 +205,7 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
   }
 
   function closePuzzle() {
+    setIsPuzzleHelpOpen(false);
     setActivePhoto(null);
     setSelectedTileIndex(null);
   }
@@ -507,6 +510,14 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
         <div className="puzzle-modal" role="dialog" aria-modal="true">
           <div className={`puzzle-modal__panel${isSolved ? " puzzle-modal__panel--solved" : ""}`}>
             <button
+              className="puzzle-modal__help"
+              type="button"
+              aria-label={puzzle.solveTitle}
+              onClick={() => setIsPuzzleHelpOpen(true)}
+            >
+              ?
+            </button>
+            <button
               className="puzzle-modal__close"
               type="button"
               aria-label={labels.closeLabel}
@@ -515,8 +526,8 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
               ×
             </button>
             <div className="puzzle-modal__copy">
-              <h3>{isSolved ? puzzle.unlockedLabel : puzzle.solveTitle}</h3>
-              <p>{isSolved ? activePhoto.title : puzzle.solveBody}</p>
+              <h3>{activePhoto.title}</h3>
+              {activePhoto.hint ? <p>{activePhoto.hint}</p> : null}
             </div>
             {isSolved ? (
               <div className="puzzle-congrats" aria-live="polite">
@@ -526,7 +537,6 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
                   ))}
                 </div>
                 <strong>{puzzle.unlockedLabel}!</strong>
-                <span>{activePhoto.title}</span>
               </div>
             ) : null}
             <div
@@ -550,22 +560,35 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
                   aria-label={formatLabel(labels.tileAriaLabel, { index: tileIndex + 1 })}
                 />
               ))}
+              {isSolved ? (
+                <img
+                  className="puzzle-board__solved-photo"
+                  src={activePhoto.src}
+                  alt=""
+                  aria-hidden="true"
+                />
+              ) : null}
             </div>
             {isSolved ? (
               nextModalPhoto ? (
                 <div className="puzzle-modal__next">
-                  <div>
+                  <div className="puzzle-modal__next-action">
                     <span>{labels.nextPhotoLabel}</span>
                     <strong>{nextModalPhoto.title}</strong>
-                    {nextModalPhoto.hint ? <p>{nextModalPhoto.hint}</p> : null}
+                    <button
+                      className="puzzle-modal__primary"
+                      type="button"
+                      onClick={() => startNextModalPuzzle(nextModalPhoto)}
+                    >
+                      {puzzle.startLabel}
+                    </button>
                   </div>
-                  <button
-                    className="puzzle-modal__primary"
-                    type="button"
-                    onClick={() => startNextModalPuzzle(nextModalPhoto)}
-                  >
-                    {puzzle.startLabel}
-                  </button>
+                  <img
+                    className="puzzle-modal__next-photo"
+                    src={nextModalPhoto.src}
+                    alt={nextModalPhoto.alt}
+                    onLoad={(event) => rememberPhotoAspect(nextModalPhoto, event.currentTarget)}
+                  />
                 </div>
               ) : (
                 <div className="puzzle-modal__next">
@@ -575,6 +598,28 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
                   </div>
                 </div>
               )
+            ) : null}
+            {isPuzzleHelpOpen ? (
+              <div
+                className="puzzle-help"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="puzzle-help-title"
+                onClick={() => setIsPuzzleHelpOpen(false)}
+              >
+                <div className="puzzle-help__panel" onClick={(event) => event.stopPropagation()}>
+                  <button
+                    className="puzzle-modal__close"
+                    type="button"
+                    aria-label={labels.closeLabel}
+                    onClick={() => setIsPuzzleHelpOpen(false)}
+                  >
+                    ×
+                  </button>
+                  <h3 id="puzzle-help-title">{puzzle.solveTitle}</h3>
+                  <p>{puzzle.solveBody}</p>
+                </div>
+              </div>
             ) : null}
           </div>
         </div>
