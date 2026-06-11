@@ -3,6 +3,84 @@
     "title": "Emma & Noah Wedding",
     "description": "Wedding invitation website for Emma and Noah."
   },
+  "admin": {
+    "kicker": "Wedding Admin",
+    "title": "Administration",
+    "passwordLabel": "Password",
+    "signInLabel": "Sign in",
+    "signingInLabel": "Signing in...",
+    "refreshLabel": "Refresh",
+    "signOutLabel": "Sign out",
+    "loadingLabel": "Loading...",
+    "loadingGuestDataLabel": "Loading guest data",
+    "loginErrorMessage": "The admin password was not accepted.",
+    "loadErrorMessage": "Could not load the admin data.",
+    "lastRefreshedLabel": "Last refreshed {time}",
+    "sortedByLabel": "Sorted by {field} {direction}",
+    "directionLabels": {
+      "asc": "ascending",
+      "desc": "descending"
+    },
+    "summaryAriaLabel": "Summary",
+    "metrics": {
+      "responses": "Responses",
+      "attending": "Attending",
+      "ceremonyAttending": "Ceremony attending",
+      "additionalGuests": "Additional guests",
+      "puzzleSolves": "Puzzle solves"
+    },
+    "tabs": {
+      "dashboard": "Dashboard",
+      "rsvps": "RSVP responses",
+      "puzzle": "Puzzle dashboard",
+      "activities": "Activities"
+    },
+    "rsvp": {
+      "title": "RSVP responses",
+      "sortedDescription": "Default sort is created time descending.",
+      "mobileSortLabel": "Sort field",
+      "mobileDirectionLabel": "Sort direction",
+      "cardAriaLabel": "{name}'s RSVP",
+      "exportCsvLabel": "Export CSV",
+      "csvFileName": "wedding-rsvp-responses.csv"
+    },
+    "puzzle": {
+      "title": "Puzzle progress",
+      "description": "Guests are ordered by solved puzzle count descending.",
+      "solvedAriaLabel": "Solved",
+      "unsolvedAriaLabel": "Unsolved",
+      "progressFormat": "{count}/{total}",
+      "leaderboardTitle": "Puzzle leaderboard",
+      "leaderboardDescription": "Top guests by solved puzzle count.",
+      "leaderboardRankLabel": "Rank {rank}"
+    },
+    "activities": {
+      "title": "Recent activity",
+      "description": "Latest RSVP and puzzle events.",
+      "emptyLabel": "No recent activity yet.",
+      "itemAriaLabel": "{type} by {name}",
+      "typeLabels": {
+        "rsvpCreated": "Submitted RSVP",
+        "rsvpUpdated": "Updated RSVP",
+        "puzzleUnlocked": "Solved puzzle"
+      },
+      "unknownPuzzleLabel": "Unknown puzzle"
+    },
+    "fields": {
+      "createdAt": "Created",
+      "updatedAt": "Updated",
+      "name": "Name",
+      "identity": "Identity",
+      "attendance": "Reception",
+      "ceremonyAttendance": "Ceremony",
+      "guestCount": "Guests",
+      "unlockedCount": "Solved",
+      "phone": "Phone",
+      "email": "Email",
+      "message": "Message"
+    },
+    "emptyValue": "-"
+  },
   "music": {
     "enabled": false,
     "src": "/audio/wedding-theme.mp3",

@@ -5,6 +5,8 @@ export type AppConfig = {
   webOrigin: string;
   phoneHashSecret: string;
   browserTokenSecret: string;
+  adminPassword: string;
+  adminTokenSecret: string;
 };
 
 export function loadConfig(): AppConfig {
@@ -19,6 +21,11 @@ export function loadConfig(): AppConfig {
       readEnv("PHONE_HASH_SECRET") ?? "dev-phone-hash-secret-change-me",
     browserTokenSecret:
       readEnv("BROWSER_TOKEN_SECRET") ?? "dev-browser-token-secret-change-me",
+    adminPassword: readEnv("ADMIN_PASSWORD") ?? "admin",
+    adminTokenSecret:
+      readEnv("ADMIN_TOKEN_SECRET") ??
+      readEnv("BROWSER_TOKEN_SECRET") ??
+      "dev-admin-token-secret-change-me",
   };
 }
 

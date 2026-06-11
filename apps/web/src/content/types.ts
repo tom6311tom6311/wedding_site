@@ -24,6 +24,84 @@ export type WeddingContent = {
     title: string;
     description: string;
   };
+  admin: {
+    kicker: string;
+    title: string;
+    passwordLabel: string;
+    signInLabel: string;
+    signingInLabel: string;
+    refreshLabel: string;
+    signOutLabel: string;
+    loadingLabel: string;
+    loadingGuestDataLabel: string;
+    loginErrorMessage: string;
+    loadErrorMessage: string;
+    lastRefreshedLabel: string;
+    sortedByLabel: string;
+    directionLabels: {
+      asc: string;
+      desc: string;
+    };
+    summaryAriaLabel: string;
+    metrics: {
+      responses: string;
+      attending: string;
+      ceremonyAttending: string;
+      additionalGuests: string;
+      puzzleSolves: string;
+    };
+    tabs: {
+      dashboard: string;
+      rsvps: string;
+      puzzle: string;
+      activities: string;
+    };
+    rsvp: {
+      title: string;
+      sortedDescription: string;
+      mobileSortLabel: string;
+      mobileDirectionLabel: string;
+      cardAriaLabel: string;
+      exportCsvLabel: string;
+      csvFileName: string;
+    };
+    puzzle: {
+      title: string;
+      description: string;
+      solvedAriaLabel: string;
+      unsolvedAriaLabel: string;
+      progressFormat: string;
+      leaderboardTitle: string;
+      leaderboardDescription: string;
+      leaderboardRankLabel: string;
+    };
+    activities: {
+      title: string;
+      description: string;
+      emptyLabel: string;
+      itemAriaLabel: string;
+      typeLabels: {
+        rsvpCreated: string;
+        rsvpUpdated: string;
+        puzzleUnlocked: string;
+      };
+      unknownPuzzleLabel: string;
+    };
+    fields: {
+      createdAt: string;
+      updatedAt: string;
+      name: string;
+      identity: string;
+      attendance: string;
+      ceremonyAttendance: string;
+      guestCount: string;
+      unlockedCount: string;
+      phone: string;
+      email: string;
+      message: string;
+    };
+    emptyValue: string;
+  };
   music?: {
     enabled: boolean;
     src: string;

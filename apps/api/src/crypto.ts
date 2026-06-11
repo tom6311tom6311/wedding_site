@@ -1,4 +1,11 @@
-import { createCipheriv, createDecipheriv, createHmac, createHash, randomBytes } from "node:crypto";
+import {
+  createCipheriv,
+  createDecipheriv,
+  createHmac,
+  createHash,
+  randomBytes,
+  timingSafeEqual,
+} from "node:crypto";
 
 const ENCRYPTION_VERSION = "v1";
 
@@ -8,6 +15,17 @@ export function hmacSha256Hex(value: string, secret: string) {
 
 export function createBrowserToken() {
   return randomBytes(32).toString("base64url");
+}
+
+export function constantTimeEqual(first: string, second: string) {
+  const firstBuffer = Buffer.from(first);
+  const secondBuffer = Buffer.from(second);
+
+  if (firstBuffer.length !== secondBuffer.length) {
+    return false;
+  }
+
+  return timingSafeEqual(firstBuffer, secondBuffer);
 }
 
 export function encryptText(value: string, secret: string) {
