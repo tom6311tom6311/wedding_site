@@ -2549,6 +2549,37 @@ a:focus:not(:focus-visible) {
   padding: 0 1.4rem;
 }
 
+.puzzle-modal__next {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.8rem;
+  border: 1px solid rgba(138, 88, 70, 0.14);
+  border-radius: 8px;
+  padding: 0.8rem;
+  background: rgba(255, 250, 245, 0.76);
+}
+
+.puzzle-modal__next span {
+  display: block;
+  color: #8a5846;
+  font-size: 1.28rem;
+  font-weight: 850;
+}
+
+.puzzle-modal__next strong {
+  display: block;
+  color: #2f2924;
+  font-size: clamp(1.35rem, 2.4vw, 1.7rem);
+  line-height: 1.15;
+}
+
+.puzzle-modal__next p {
+  margin: 0.24rem 0 0;
+  color: #6a554b;
+  line-height: 1.35;
+}
+
 .puzzle-closet__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(8.8rem, 1fr));
@@ -3224,6 +3255,15 @@ a:focus:not(:focus-visible) {
 
   .puzzle-modal {
     align-items: center;
+  }
+
+  .puzzle-modal__next {
+    grid-template-columns: 1fr;
+    justify-items: stretch;
+  }
+
+  .puzzle-modal__next .puzzle-modal__primary {
+    width: 100%;
   }
 }
 

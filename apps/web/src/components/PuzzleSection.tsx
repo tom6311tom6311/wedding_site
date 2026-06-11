@@ -88,6 +88,12 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
   );
   const nextPhoto = puzzle.photos.find((photo) => !unlockedSet.has(photo.id)) ?? null;
   const hasSolvedAll = nextPhoto === null && puzzle.photos.length > 0;
+  const nextModalPhoto =
+    activePhoto && isSolved
+      ? (puzzle.photos.find(
+          (photo) => photo.id !== activePhoto.id && !unlockedSet.has(photo.id),
+        ) ?? null)
+      : null;
   const labels = puzzle.labels;
   const activePhotoAspect = activePhoto ? (photoAspects[activePhoto.id] ?? 4 / 5) : 4 / 5;
 
@@ -163,7 +169,7 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
     unlockedPhotoIds.forEach((photoId) => clearStoredPuzzleState(photoId));
   }, [unlockedPhotoIds]);
 
-  function startPuzzle(photo: PuzzlePhoto) {
+  function startPuzzle(photo: PuzzlePhoto, puzzleNumber = unlockedPhotoIds.length + 1) {
     if (!guest) {
       setStatus(puzzle.identifyBody);
       return;
@@ -185,7 +191,7 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
 
     const nextPuzzleDimensions = getPuzzleDimensions(
       puzzle.difficultyTiers,
-      unlockedPhotoIds.length + 1,
+      puzzleNumber,
       photoAspects[photo.id],
     );
     const nextTileOrder = createShuffledOrder(getTileCount(nextPuzzleDimensions));
@@ -214,6 +220,13 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
     }
 
     setShouldReturnToCloset(false);
+  }
+
+  function startNextModalPuzzle(photo: PuzzlePhoto) {
+    const activePhotoIsAlreadyUnlocked = activePhoto ? unlockedSet.has(activePhoto.id) : false;
+    const nextPuzzleNumber = unlockedPhotoIds.length + (activePhotoIsAlreadyUnlocked ? 1 : 2);
+
+    startPuzzle(photo, nextPuzzleNumber);
   }
 
   function rememberPhotoAspect(photo: PuzzlePhoto, image: HTMLImageElement) {
@@ -539,16 +552,29 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
               ))}
             </div>
             {isSolved ? (
-              <button
-                className="puzzle-modal__primary"
-                type="button"
-                onClick={() => {
-                  openPhoto(activePhoto);
-                  closePuzzle();
-                }}
-              >
-                {puzzle.continueLabel}
-              </button>
+              nextModalPhoto ? (
+                <div className="puzzle-modal__next">
+                  <div>
+                    <span>{labels.nextPhotoLabel}</span>
+                    <strong>{nextModalPhoto.title}</strong>
+                    {nextModalPhoto.hint ? <p>{nextModalPhoto.hint}</p> : null}
+                  </div>
+                  <button
+                    className="puzzle-modal__primary"
+                    type="button"
+                    onClick={() => startNextModalPuzzle(nextModalPhoto)}
+                  >
+                    {puzzle.startLabel}
+                  </button>
+                </div>
+              ) : (
+                <div className="puzzle-modal__next">
+                  <div>
+                    <strong>{labels.allSolvedTitle}</strong>
+                    <p>{formatLabel(labels.allSolvedBody, { total: puzzle.photos.length })}</p>
+                  </div>
+                </div>
+              )
             ) : null}
           </div>
         </div>
