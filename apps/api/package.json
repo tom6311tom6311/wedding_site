@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc --noEmit",
+    "build:prod": "tsc -p tsconfig.build.json",
     "start": "tsx src/server.ts"
   },
   "dependencies": {
