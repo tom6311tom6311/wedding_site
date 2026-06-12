@@ -6,7 +6,7 @@ type HeroProps = {
   hero: WeddingContent["hero"];
 };
 
-const INITIAL_CAROUSEL_DELAY_MS = 12_000;
+const INITIAL_CAROUSEL_DELAY_MS = 2_000;
 
 export function HeroSection({ hero }: HeroProps) {
   const slides = hero.images && hero.images.length > 0 ? hero.images : [hero.image];
