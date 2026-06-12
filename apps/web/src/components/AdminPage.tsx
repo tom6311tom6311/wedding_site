@@ -50,6 +50,21 @@ type SortKey =
 
 type SortDirection = "asc" | "desc";
 type AdminTab = "dashboard" | "rsvps" | "puzzle" | "activities";
+type AdminRsvpFormValues = {
+  name: string;
+  email: string;
+  phone: string;
+  identity: string;
+  attendance: string;
+  ceremonyAttendance: string;
+  guestCount: string;
+  message: string;
+};
+
+type AdminStatus = {
+  type: "success" | "error";
+  message: string;
+};
 
 const RSVP_API_BASE_URL =
   import.meta.env.VITE_RSVP_API_BASE_URL ?? "http://localhost:4000";
@@ -74,6 +89,7 @@ export function AdminPage({ content }: AdminPageProps) {
     [puzzlePhotos],
   );
   const identityOptions = useMemo(() => getIdentityOptions(content), [content]);
+  const rsvpFields = useMemo(() => getRsvpFieldMap(content), [content]);
   const [token, setToken] = useState(() =>
     window.localStorage.getItem(ADMIN_TOKEN_STORAGE_KEY),
   );
@@ -84,7 +100,12 @@ export function AdminPage({ content }: AdminPageProps) {
   const [activeTab, setActiveTab] = useState<AdminTab>("dashboard");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSavingRsvp, setIsSavingRsvp] = useState(false);
+  const [deletingRsvpId, setDeletingRsvpId] = useState<string | null>(null);
+  const [editingRsvp, setEditingRsvp] = useState<AdminRsvp | null>(null);
+  const [editValues, setEditValues] = useState<AdminRsvpFormValues | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [adminStatus, setAdminStatus] = useState<AdminStatus | null>(null);
 
   const sortedRsvps = useMemo(() => {
     const direction = sortDirection === "asc" ? 1 : -1;
@@ -226,10 +247,129 @@ export function AdminPage({ content }: AdminPageProps) {
     setToken(null);
     setOverview(null);
     setError(null);
+    setAdminStatus(null);
+    setEditingRsvp(null);
+    setEditValues(null);
   }
 
   function exportRsvpsCsv() {
     downloadCsv(admin.rsvp.csvFileName, createRsvpCsv(sortedRsvps, admin));
+  }
+
+  function startEditingRsvp(rsvp: AdminRsvp) {
+    setAdminStatus(null);
+    setEditingRsvp(rsvp);
+    setEditValues(toRsvpFormValues(rsvp));
+  }
+
+  function cancelEditingRsvp() {
+    setEditingRsvp(null);
+    setEditValues(null);
+    setAdminStatus(null);
+  }
+
+  async function handleSaveRsvp(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (!token || !editingRsvp || !editValues) {
+      return;
+    }
+
+    setIsSavingRsvp(true);
+    setAdminStatus(null);
+
+    try {
+      const response = await fetch(
+        `${RSVP_API_BASE_URL}/api/admin/rsvps/${editingRsvp.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(toRsvpPayload(editValues)),
+        },
+      );
+
+      if (response.status === 401) {
+        logout();
+        throw new Error("admin-session-expired");
+      }
+
+      if (response.status === 409) {
+        throw new Error("admin-rsvp-duplicate");
+      }
+
+      if (!response.ok) {
+        throw new Error("admin-rsvp-update-failed");
+      }
+
+      setEditingRsvp(null);
+      setEditValues(null);
+      await loadOverview(token);
+      setAdminStatus({
+        type: "success",
+        message: admin.rsvp.updateSuccessMessage,
+      });
+    } catch (caughtError) {
+      setAdminStatus({
+        type: "error",
+        message:
+          caughtError instanceof Error && caughtError.message === "admin-rsvp-duplicate"
+            ? admin.rsvp.duplicateErrorMessage
+            : admin.rsvp.updateErrorMessage,
+      });
+    } finally {
+      setIsSavingRsvp(false);
+    }
+  }
+
+  async function handleDeleteRsvp(rsvp: AdminRsvp) {
+    if (
+      !token ||
+      !window.confirm(formatTemplate(admin.rsvp.deleteConfirmMessage, { name: rsvp.name }))
+    ) {
+      return;
+    }
+
+    setDeletingRsvpId(rsvp.id);
+    setAdminStatus(null);
+
+    try {
+      const response = await fetch(`${RSVP_API_BASE_URL}/api/admin/rsvps/${rsvp.id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 401) {
+        logout();
+        throw new Error("admin-session-expired");
+      }
+
+      if (!response.ok) {
+        throw new Error("admin-rsvp-delete-failed");
+      }
+
+      if (editingRsvp?.id === rsvp.id) {
+        setEditingRsvp(null);
+        setEditValues(null);
+      }
+
+      await loadOverview(token);
+      setAdminStatus({
+        type: "success",
+        message: admin.rsvp.deleteSuccessMessage,
+      });
+    } catch {
+      setAdminStatus({
+        type: "error",
+        message: admin.rsvp.deleteErrorMessage,
+      });
+    } finally {
+      setDeletingRsvpId(null);
+    }
   }
 
   if (!token) {
@@ -283,6 +423,17 @@ export function AdminPage({ content }: AdminPageProps) {
       </header>
 
       {error ? <p className="admin-status admin-status--error">{error}</p> : null}
+      {adminStatus ? (
+        <p
+          className={
+            adminStatus.type === "error"
+              ? "admin-status admin-status--error"
+              : "admin-status admin-status--success"
+          }
+        >
+          {adminStatus.message}
+        </p>
+      ) : null}
       {isLoading && !overview ? <p className="admin-status">{admin.loadingLabel}</p> : null}
 
       {overview ? (
@@ -362,6 +513,18 @@ export function AdminPage({ content }: AdminPageProps) {
                 </select>
               </label>
             </div>
+            {editingRsvp && editValues ? (
+              <AdminRsvpEditForm
+                admin={admin}
+                fields={rsvpFields}
+                values={editValues}
+                isSaving={isSavingRsvp}
+                title={formatTemplate(admin.rsvp.editTitle, { name: editingRsvp.name })}
+                onCancel={cancelEditingRsvp}
+                onChange={setEditValues}
+                onSubmit={handleSaveRsvp}
+              />
+            ) : null}
             <div className="admin-rsvp-cards">
               {sortedRsvps.map((rsvp) => (
                 <article
@@ -383,6 +546,13 @@ export function AdminPage({ content }: AdminPageProps) {
                       })}
                     </strong>
                   </div>
+                  <RsvpActions
+                    admin={admin}
+                    isDeleting={deletingRsvpId === rsvp.id}
+                    isEditing={editingRsvp?.id === rsvp.id}
+                    onDelete={() => void handleDeleteRsvp(rsvp)}
+                    onEdit={() => startEditingRsvp(rsvp)}
+                  />
                   <dl>
                     <AdminDetail
                       label={admin.fields.attendance}
@@ -487,6 +657,7 @@ export function AdminPage({ content }: AdminPageProps) {
                       directionLabels={admin.directionLabels}
                       onSort={updateSort}
                     />
+                    <th>{admin.rsvp.actionsLabel}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -505,6 +676,15 @@ export function AdminPage({ content }: AdminPageProps) {
                         {emptyFallback(rsvp.message, admin)}
                       </td>
                       <td>{formatDateTime(rsvp.updatedAt)}</td>
+                      <td>
+                        <RsvpActions
+                          admin={admin}
+                          isDeleting={deletingRsvpId === rsvp.id}
+                          isEditing={editingRsvp?.id === rsvp.id}
+                          onDelete={() => void handleDeleteRsvp(rsvp)}
+                          onEdit={() => startEditingRsvp(rsvp)}
+                        />
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -674,6 +854,225 @@ function AdminDetail({
   );
 }
 
+function AdminRsvpEditForm({
+  admin,
+  fields,
+  values,
+  isSaving,
+  title,
+  onCancel,
+  onChange,
+  onSubmit,
+}: {
+  admin: AdminContent;
+  fields: ReturnType<typeof getRsvpFieldMap>;
+  values: AdminRsvpFormValues;
+  isSaving: boolean;
+  title: string;
+  onCancel: () => void;
+  onChange: (values: AdminRsvpFormValues) => void;
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+}) {
+  const setValue = (key: keyof AdminRsvpFormValues, value: string) => {
+    onChange({
+      ...values,
+      [key]: value,
+    });
+  };
+
+  return (
+    <form className="admin-edit-form" onSubmit={onSubmit}>
+      <h3>{title}</h3>
+      <div className="admin-edit-grid">
+        <AdminEditInput
+          label={getRsvpFieldLabel(fields, "name", admin.fields.name)}
+          name="name"
+          value={values.name}
+          onChange={(value) => setValue("name", value)}
+          required
+        />
+        <AdminEditInput
+          label={getRsvpFieldLabel(fields, "phone", admin.fields.phone)}
+          name="phone"
+          value={values.phone}
+          onChange={(value) => setValue("phone", value)}
+          required
+          type="tel"
+        />
+        <AdminEditInput
+          label={getRsvpFieldLabel(fields, "email", admin.fields.email)}
+          name="email"
+          value={values.email}
+          onChange={(value) => setValue("email", value)}
+          type="email"
+        />
+        <AdminEditSelect
+          label={getRsvpFieldLabel(fields, "identity", admin.fields.identity)}
+          name="identity"
+          options={fields.get("identity")?.options ?? []}
+          value={values.identity}
+          onChange={(value) => setValue("identity", value)}
+          required
+        />
+        <AdminEditSelect
+          label={getRsvpFieldLabel(fields, "attendance", admin.fields.attendance)}
+          name="attendance"
+          options={fields.get("attendance")?.options ?? []}
+          value={values.attendance}
+          onChange={(value) => setValue("attendance", value)}
+          required
+        />
+        <AdminEditSelect
+          label={getRsvpFieldLabel(
+            fields,
+            "ceremonyAttendance",
+            admin.fields.ceremonyAttendance,
+          )}
+          name="ceremonyAttendance"
+          options={fields.get("ceremonyAttendance")?.options ?? []}
+          value={values.ceremonyAttendance}
+          onChange={(value) => setValue("ceremonyAttendance", value)}
+          required
+        />
+        <AdminEditInput
+          label={getRsvpFieldLabel(fields, "guests", admin.fields.guestCount)}
+          min="0"
+          name="guestCount"
+          value={values.guestCount}
+          onChange={(value) => setValue("guestCount", value)}
+          required
+          type="number"
+        />
+        <label className="admin-edit-field admin-edit-field--wide">
+          <span>{getRsvpFieldLabel(fields, "message", admin.fields.message)}</span>
+          <textarea
+            name="message"
+            value={values.message}
+            onChange={(event) => setValue("message", event.target.value)}
+          />
+        </label>
+      </div>
+      <div className="admin-edit-actions">
+        <button className="admin-panel__action" disabled={isSaving} type="submit">
+          {isSaving ? admin.rsvp.savingLabel : admin.rsvp.saveLabel}
+        </button>
+        <button
+          className="admin-inline-action"
+          disabled={isSaving}
+          type="button"
+          onClick={onCancel}
+        >
+          {admin.rsvp.cancelLabel}
+        </button>
+      </div>
+    </form>
+  );
+}
+
+function AdminEditInput({
+  label,
+  name,
+  value,
+  onChange,
+  min,
+  required = false,
+  type = "text",
+}: {
+  label: string;
+  name: string;
+  value: string;
+  onChange: (value: string) => void;
+  min?: string;
+  required?: boolean;
+  type?: "email" | "number" | "tel" | "text";
+}) {
+  return (
+    <label className="admin-edit-field">
+      <span>{label}</span>
+      <input
+        min={min}
+        name={name}
+        required={required}
+        type={type}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+      />
+    </label>
+  );
+}
+
+function AdminEditSelect({
+  label,
+  name,
+  options,
+  value,
+  onChange,
+  required = false,
+}: {
+  label: string;
+  name: string;
+  options: string[];
+  value: string;
+  onChange: (value: string) => void;
+  required?: boolean;
+}) {
+  const effectiveOptions =
+    value && !options.includes(value) ? [value, ...options] : options;
+
+  return (
+    <label className="admin-edit-field">
+      <span>{label}</span>
+      <select
+        name={name}
+        required={required}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+      >
+        {effectiveOptions.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function RsvpActions({
+  admin,
+  isDeleting,
+  isEditing,
+  onDelete,
+  onEdit,
+}: {
+  admin: AdminContent;
+  isDeleting: boolean;
+  isEditing: boolean;
+  onDelete: () => void;
+  onEdit: () => void;
+}) {
+  return (
+    <div className="admin-row-actions">
+      <button
+        className="admin-inline-action"
+        disabled={isEditing || isDeleting}
+        type="button"
+        onClick={onEdit}
+      >
+        {admin.rsvp.editLabel}
+      </button>
+      <button
+        className="admin-inline-action admin-inline-action--danger"
+        disabled={isDeleting}
+        type="button"
+        onClick={onDelete}
+      >
+        {admin.rsvp.deleteLabel}
+      </button>
+    </div>
+  );
+}
+
 function SortableHeader({
   label,
   sortKey,
@@ -830,10 +1229,48 @@ function downloadCsv(fileName: string, csv: string) {
   URL.revokeObjectURL(url);
 }
 
+function toRsvpFormValues(rsvp: AdminRsvp): AdminRsvpFormValues {
+  return {
+    name: rsvp.name,
+    email: rsvp.email,
+    phone: rsvp.phone,
+    identity: rsvp.identity,
+    attendance: rsvp.attendance,
+    ceremonyAttendance: rsvp.ceremonyAttendance,
+    guestCount: String(rsvp.guestCount),
+    message: rsvp.message,
+  };
+}
+
+function toRsvpPayload(values: AdminRsvpFormValues) {
+  return {
+    name: values.name,
+    email: values.email,
+    phone: values.phone,
+    identity: values.identity,
+    attendance: values.attendance,
+    ceremonyAttendance: values.ceremonyAttendance,
+    guestCount: Number(values.guestCount),
+    message: values.message,
+  };
+}
+
 function getIdentityOptions(content: WeddingContent) {
   const identityField = content.rsvp.fields.find((field) => field.name === "identity");
 
   return identityField?.options ?? [];
+}
+
+function getRsvpFieldMap(content: WeddingContent) {
+  return new Map(content.rsvp.fields.map((field) => [field.name, field]));
+}
+
+function getRsvpFieldLabel(
+  fields: ReturnType<typeof getRsvpFieldMap>,
+  name: string,
+  fallback: string,
+) {
+  return fields.get(name)?.label ?? fallback;
 }
 
 function countByIdentity(rsvps: AdminRsvp[], identityOptions: string[]) {

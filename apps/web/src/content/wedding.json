@@ -42,7 +42,20 @@
       "mobileDirectionLabel": "Sort direction",
       "cardAriaLabel": "{name}'s RSVP",
       "exportCsvLabel": "Export CSV",
-      "csvFileName": "wedding-rsvp-responses.csv"
+      "csvFileName": "wedding-rsvp-responses.csv",
+      "actionsLabel": "Actions",
+      "editLabel": "Edit",
+      "deleteLabel": "Delete",
+      "editTitle": "Edit {name}'s RSVP",
+      "saveLabel": "Save changes",
+      "savingLabel": "Saving...",
+      "cancelLabel": "Cancel",
+      "deleteConfirmMessage": "Delete {name}'s RSVP? This cannot be undone.",
+      "updateSuccessMessage": "RSVP updated.",
+      "deleteSuccessMessage": "RSVP deleted.",
+      "updateErrorMessage": "Could not update the RSVP.",
+      "deleteErrorMessage": "Could not delete the RSVP.",
+      "duplicateErrorMessage": "Another RSVP already uses this name or phone."
     },
     "puzzle": {
       "title": "Puzzle progress",

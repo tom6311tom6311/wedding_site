@@ -13,6 +13,7 @@ const app = Fastify({
 const pool = createPool(config);
 
 await app.register(cors, {
+  methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
   origin: config.webOrigin,
 });
 

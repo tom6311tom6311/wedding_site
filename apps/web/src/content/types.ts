@@ -64,6 +64,19 @@ export type WeddingContent = {
       cardAriaLabel: string;
       exportCsvLabel: string;
       csvFileName: string;
+      actionsLabel: string;
+      editLabel: string;
+      deleteLabel: string;
+      editTitle: string;
+      saveLabel: string;
+      savingLabel: string;
+      cancelLabel: string;
+      deleteConfirmMessage: string;
+      updateSuccessMessage: string;
+      deleteSuccessMessage: string;
+      updateErrorMessage: string;
+      deleteErrorMessage: string;
+      duplicateErrorMessage: string;
     };
     puzzle: {
       title: string;
