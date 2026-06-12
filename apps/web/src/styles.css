@@ -489,6 +489,7 @@ a:focus:not(:focus-visible) {
   background: var(--section-background);
 }
 
+.hero + .page-section,
 .page-section + .page-section {
   margin-top: calc(clamp(1.75rem, 4.5vw, 3.5rem) * 2);
 }
