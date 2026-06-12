@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import pg from "pg";
 import type { AppConfig } from "./config.js";
 
@@ -27,6 +28,12 @@ export type PhotoUnlockRow = {
 export function createPool(config: AppConfig) {
   return new pg.Pool({
     connectionString: config.databaseUrl,
+    ssl: config.databaseSslCaFile
+      ? {
+          ca: readFileSync(config.databaseSslCaFile, "utf8"),
+          rejectUnauthorized: true,
+        }
+      : undefined,
   });
 }
 

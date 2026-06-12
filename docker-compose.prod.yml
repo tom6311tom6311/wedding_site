@@ -6,6 +6,7 @@ services:
     restart: unless-stopped
     environment:
       DATABASE_URL: ${DATABASE_URL}
+      DATABASE_SSL_CA_FILE: ${DATABASE_SSL_CA_FILE}
       WEB_ORIGIN: ${WEB_ORIGIN}
       PHONE_HASH_SECRET: ${PHONE_HASH_SECRET}
       BROWSER_TOKEN_SECRET: ${BROWSER_TOKEN_SECRET}
