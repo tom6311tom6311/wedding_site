@@ -100,6 +100,15 @@ export async function migrate(pool: pg.Pool) {
     )
   `);
   await pool.query(`
+    ALTER TABLE photo_unlocks
+    DROP CONSTRAINT IF EXISTS photo_unlocks_rsvp_id_fkey
+  `);
+  await pool.query(`
+    ALTER TABLE photo_unlocks
+    ADD CONSTRAINT photo_unlocks_rsvp_id_fkey
+    FOREIGN KEY (rsvp_id) REFERENCES rsvp_responses(id) ON DELETE CASCADE
+  `);
+  await pool.query(`
     CREATE INDEX IF NOT EXISTS photo_unlocks_rsvp_id_idx
     ON photo_unlocks (rsvp_id)
   `);

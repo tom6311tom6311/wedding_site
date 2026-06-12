@@ -217,13 +217,30 @@ export function registerAdminRoutes(app: FastifyInstance, pool: pg.Pool, config:
       return reply.code(400).send({ error: "Invalid RSVP id" });
     }
 
-    const deleted = await pool.query<{ id: string }>(
-      "DELETE FROM rsvp_responses WHERE id = $1 RETURNING id",
-      [parsedParams.data.id],
-    );
+    const client = await pool.connect();
 
-    if (!deleted.rows[0]) {
-      return reply.code(404).send({ error: "RSVP response not found" });
+    try {
+      await client.query("BEGIN");
+      await client.query("DELETE FROM photo_unlocks WHERE rsvp_id = $1", [
+        parsedParams.data.id,
+      ]);
+
+      const deleted = await client.query<{ id: string }>(
+        "DELETE FROM rsvp_responses WHERE id = $1 RETURNING id",
+        [parsedParams.data.id],
+      );
+
+      if (!deleted.rows[0]) {
+        await client.query("ROLLBACK");
+        return reply.code(404).send({ error: "RSVP response not found" });
+      }
+
+      await client.query("COMMIT");
+    } catch (error) {
+      await client.query("ROLLBACK");
+      throw error;
+    } finally {
+      client.release();
     }
 
     return { ok: true };
