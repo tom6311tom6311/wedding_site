@@ -3885,7 +3885,7 @@ a:focus:not(:focus-visible) {
   }
 
   .countdown-section {
-    min-height: 100svh;
+    min-height: max(34rem, 100svh);
   }
 
   .intro-section {
@@ -4169,14 +4169,13 @@ a:focus:not(:focus-visible) {
     line-height: 1.62;
   }
 
-  .countdown-section,
   .intro-section,
   .story-section {
     min-height: auto;
   }
 
   .countdown-inner {
-    min-height: auto;
+    min-height: max(26rem, calc(100svh - var(--section-padding-block) - var(--section-padding-block)));
   }
 
   .countdown-display {
@@ -4194,62 +4193,6 @@ a:focus:not(:focus-visible) {
 
   .intro-section p:not(.section-eyebrow) {
     padding-inline: 0.25rem;
-  }
-
-  .couple-person,
-  .couple-person:nth-child(2),
-  .parents-card,
-  .parents-card--groom {
-    grid-template-columns: minmax(0, 1fr);
-    justify-items: center;
-    text-align: center;
-  }
-
-  .couple-person:nth-child(1),
-  .couple-person:nth-child(2),
-  .parents-card--bride,
-  .parents-card--groom {
-    justify-self: stretch;
-  }
-
-  .couple-person:nth-child(1) .couple-copy,
-  .couple-person:nth-child(2) .couple-copy,
-  .parents-card--bride .parents-copy,
-  .parents-card--groom .parents-copy,
-  .couple-person:nth-child(1) .couple-portrait,
-  .couple-person:nth-child(2) .couple-portrait,
-  .parents-card--bride .parents-photo,
-  .parents-card--groom .parents-photo {
-    justify-self: center;
-  }
-
-  .couple-person:nth-child(2) .couple-copy,
-  .parents-card--groom .parents-copy {
-    order: 1;
-  }
-
-  .couple-person:nth-child(2) .couple-portrait,
-  .parents-card--groom .parents-photo {
-    order: 2;
-  }
-
-  .couple-copy,
-  .parents-copy {
-    justify-items: center;
-    width: min(100%, 20rem);
-  }
-
-  .couple-copy .couple-introduction,
-  .parent-intro p {
-    max-width: 18rem;
-  }
-
-  .couple-portrait {
-    width: min(68vw, 15rem);
-  }
-
-  .parents-photo {
-    width: min(78vw, 18rem);
   }
 
   .details-grid {
