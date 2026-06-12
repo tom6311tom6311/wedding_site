@@ -15,5 +15,8 @@
     "build:api": "npm --workspace @wedding-site/api run build",
     "build:web": "npm --workspace @wedding-site/web run build",
     "preview": "npm --workspace @wedding-site/web run preview --"
+  },
+  "devDependencies": {
+    "ttf2woff2": "^8.0.1"
   }
 }
