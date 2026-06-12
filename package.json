@@ -14,9 +14,11 @@
     "build": "npm --workspaces --if-present run build",
     "build:api": "npm --workspace @wedding-site/api run build",
     "build:web": "npm --workspace @wedding-site/web run build",
-    "preview": "npm --workspace @wedding-site/web run preview --"
+    "preview": "npm --workspace @wedding-site/web run preview --",
+    "subset:font": "node apps/web/scripts/subset-font.cjs"
   },
   "devDependencies": {
+    "subset-font": "^2.5.0",
     "ttf2woff2": "^8.0.1"
   }
 }

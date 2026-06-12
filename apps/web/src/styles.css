@@ -1,6 +1,6 @@
 @font-face {
   font-family: "ChenYu LuoYan";
-  src: url("/fonts/ChenYuluoyan-2.0-Thin.woff2") format("woff2");
+  src: url("/fonts/ChenYuluoyan-2.0-Thin.subset.woff2") format("woff2");
   font-display: fallback;
   font-style: normal;
   font-weight: 100 900;
