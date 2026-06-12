@@ -11,23 +11,21 @@ export function ImageCarousel({
   images,
   onSelectSlide,
 }: ImageCarouselProps) {
-  const activeImage = images[activeSlide];
-
   return (
     <>
       <div className="hero__carousel" aria-hidden="true">
-        {activeImage ? (
+        {images.map((image, index) => (
           <img
-            className="hero__image hero__image--active"
-            key={activeImage.src}
-            src={activeImage.src}
+            className={`hero__image${index === activeSlide ? " hero__image--active" : ""}`}
+            key={image.src}
+            src={image.src}
             alt=""
-            decoding={activeSlide === 0 ? "sync" : "async"}
-            fetchPriority={activeSlide === 0 ? "high" : "auto"}
-            loading={activeSlide === 0 ? "eager" : "lazy"}
-            style={{ objectPosition: activeImage.objectPosition }}
+            decoding={index === 0 ? "sync" : "async"}
+            fetchPriority={index === 0 ? "high" : "auto"}
+            loading="eager"
+            style={{ objectPosition: image.objectPosition }}
           />
-        ) : null}
+        ))}
       </div>
 
       {images.length > 1 ? (

@@ -6,11 +6,10 @@ type HeroProps = {
   hero: WeddingContent["hero"];
 };
 
-const INITIAL_CAROUSEL_DELAY_MS = 2_000;
-
 export function HeroSection({ hero }: HeroProps) {
   const slides = hero.images && hero.images.length > 0 ? hero.images : [hero.image];
   const carouselIntervalMs = hero.carousel.intervalMs;
+  const nextSlideSrc = slides[1]?.src;
   const [activeSlide, setActiveSlide] = useState(0);
 
   useEffect(() => {
@@ -24,21 +23,43 @@ export function HeroSection({ hero }: HeroProps) {
       return;
     }
 
+    let isCancelled = false;
     let interval: number | undefined;
-    const timeout = window.setTimeout(() => {
-      interval = window.setInterval(() => {
-        setActiveSlide((current) => (current + 1) % slides.length);
-      }, carouselIntervalMs);
-    }, INITIAL_CAROUSEL_DELAY_MS);
+    let timeout: number | undefined;
+
+    const advanceSlide = () => {
+      setActiveSlide((current) => (current + 1) % slides.length);
+    };
+
+    const startInterval = () => {
+      interval = window.setInterval(advanceSlide, carouselIntervalMs);
+    };
+
+    const nextImageReady = waitForImageDecode(nextSlideSrc);
+
+    timeout = window.setTimeout(() => {
+      void nextImageReady.finally(() => {
+        if (isCancelled) {
+          return;
+        }
+
+        advanceSlide();
+        startInterval();
+      });
+    }, carouselIntervalMs);
 
     return () => {
-      window.clearTimeout(timeout);
+      isCancelled = true;
+
+      if (timeout) {
+        window.clearTimeout(timeout);
+      }
 
       if (interval) {
         window.clearInterval(interval);
       }
     };
-  }, [carouselIntervalMs, slides.length]);
+  }, [carouselIntervalMs, nextSlideSrc, slides.length]);
 
   return (
     <section className="hero" aria-labelledby="hero-title">
@@ -76,6 +97,29 @@ export function HeroSection({ hero }: HeroProps) {
 
     </section>
   );
+}
+
+function waitForImageDecode(src: string) {
+  return new Promise<void>((resolve) => {
+    const image = new Image();
+
+    image.decoding = "async";
+    image.fetchPriority = "high";
+    image.onload = () => {
+      if (typeof image.decode !== "function") {
+        resolve();
+        return;
+      }
+
+      image.decode().then(resolve, resolve);
+    };
+    image.onerror = () => resolve();
+    image.src = src;
+
+    if (image.complete) {
+      image.onload?.(new Event("load"));
+    }
+  });
 }
 
 function HeroDecorations() {
