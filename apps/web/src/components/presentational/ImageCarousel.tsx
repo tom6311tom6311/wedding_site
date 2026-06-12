@@ -20,7 +20,9 @@ export function ImageCarousel({
             key={image.src}
             src={image.src}
             alt=""
-            loading={index === 0 ? "eager" : "lazy"}
+            decoding={index === 0 ? "sync" : "async"}
+            fetchPriority={index === 0 ? "high" : "auto"}
+            loading={index < 3 ? "eager" : "lazy"}
             style={{ objectPosition: image.objectPosition }}
           />
         ))}

@@ -75,12 +75,16 @@ function HeroDecorations() {
         src="/images/hero-rose-top-right.png"
         alt=""
         aria-hidden="true"
+        decoding="async"
+        fetchPriority="high"
       />
       <img
         className="hero__decoration hero__decoration--bottom"
         src="/images/hero-rose-bottom-left.png"
         alt=""
         aria-hidden="true"
+        decoding="async"
+        fetchPriority="high"
       />
     </>
   );
