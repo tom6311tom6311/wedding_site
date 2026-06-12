@@ -17,8 +17,10 @@ export function loadConfig(): AppConfig {
       readEnv("DATABASE_URL") ??
       "postgres://wedding:wedding@localhost:5432/wedding",
     databaseSslCaFile: readEnv("DATABASE_SSL_CA_FILE"),
-    databaseSslRejectUnauthorized:
-      readEnv("DATABASE_SSL_REJECT_UNAUTHORIZED") !== "false",
+    databaseSslRejectUnauthorized: readBooleanEnv(
+      "DATABASE_SSL_REJECT_UNAUTHORIZED",
+      true,
+    ),
     host: readEnv("HOST") ?? "0.0.0.0",
     port: Number(readEnv("PORT") ?? 4000),
     webOrigin: readEnv("WEB_ORIGIN") ?? "http://localhost:5173",
@@ -38,4 +40,24 @@ function readEnv(name: string) {
   const value = process.env[name]?.trim();
 
   return value || undefined;
+}
+
+function readBooleanEnv(name: string, defaultValue: boolean) {
+  const value = readEnv(name);
+
+  if (!value) {
+    return defaultValue;
+  }
+
+  const normalized = value.replace(/^["']|["']$/g, "").toLowerCase();
+
+  if (["0", "false", "no", "off"].includes(normalized)) {
+    return false;
+  }
+
+  if (["1", "true", "yes", "on"].includes(normalized)) {
+    return true;
+  }
+
+  return defaultValue;
 }

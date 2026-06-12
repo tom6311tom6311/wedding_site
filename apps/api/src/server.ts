@@ -11,6 +11,17 @@ const app = Fastify({
   logger: true,
 });
 const pool = createPool(config);
+const databaseUrl = new URL(config.databaseUrl);
+
+app.log.info(
+  {
+    database: databaseUrl.pathname.replace(/^\//, ""),
+    databaseHost: databaseUrl.hostname,
+    databaseSslCaFile: config.databaseSslCaFile ?? null,
+    databaseSslRejectUnauthorized: config.databaseSslRejectUnauthorized,
+  },
+  "database connection config",
+);
 
 await app.register(cors, {
   methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
