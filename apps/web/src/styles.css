@@ -490,7 +490,7 @@ a:focus:not(:focus-visible) {
 }
 
 .page-section + .page-section {
-  margin-top: clamp(2rem, 5vw, 4.5rem);
+  margin-top: calc(clamp(1.75rem, 4.5vw, 3.5rem) * 2);
 }
 
 .section-inner {
