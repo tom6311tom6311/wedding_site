@@ -4398,15 +4398,19 @@ a:focus:not(:focus-visible) {
     margin-bottom: 0.75rem;
   }
 
+  .story-stage {
+    gap: 0.9rem;
+  }
+
   .story-stack {
-    width: min(100%, 17.8rem);
-    height: min(25.6rem, calc(100svh - 7.4rem));
+    width: min(100%, 17rem);
+    height: 27.6rem;
   }
 
   .story-card {
-    width: min(100%, 16.6rem);
-    gap: 0.42rem;
-    padding: 0.46rem 0.46rem 0.72rem;
+    width: min(100%, 15.9rem);
+    gap: 0.34rem;
+    padding: 0.42rem 0.42rem 0.68rem;
   }
 
   .story-card--cover {
@@ -4414,12 +4418,16 @@ a:focus:not(:focus-visible) {
   }
 
   .story-card__copy h3 {
-    font-size: clamp(1.55rem, 8svh, 2.25rem);
+    font-size: clamp(1.55rem, 6.5svh, 2rem);
   }
 
   .story-card__copy p {
-    font-size: clamp(1.42rem, 5.25svh, 1.72rem);
-    line-height: 1.16;
+    font-size: clamp(1.32rem, 4.8svh, 1.56rem);
+    line-height: 1.14;
+  }
+
+  .story-card__copy span {
+    font-size: 1.08rem;
   }
 
   .story-controls button,
