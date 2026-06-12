@@ -489,6 +489,10 @@ a:focus:not(:focus-visible) {
   background: var(--section-background);
 }
 
+.page-section + .page-section {
+  margin-top: clamp(2rem, 5vw, 4.5rem);
+}
+
 .section-inner {
   position: relative;
   z-index: 1;
