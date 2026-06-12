@@ -6,7 +6,7 @@ import { InvitationSections } from "./components/InvitationSections";
 import { weddingContent } from "./content";
 import "./styles.css";
 
-const HERO_IMAGE_PRELOAD_LIMIT = 3;
+const HERO_IMAGE_PRELOAD_LIMIT = 1;
 
 document.title = weddingContent.metadata.title;
 

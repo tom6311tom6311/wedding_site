@@ -1,9 +1,9 @@
-import divider1 from "../../assets/dividers/divider-1.png";
-import divider2 from "../../assets/dividers/divider-2.png";
-import divider3 from "../../assets/dividers/divider-3.png";
-import divider4 from "../../assets/dividers/divider-4.png";
-import divider5 from "../../assets/dividers/divider-5.png";
-import divider6 from "../../assets/dividers/divider-6.png";
+import divider1 from "../../assets/dividers/divider-1.webp";
+import divider2 from "../../assets/dividers/divider-2.webp";
+import divider3 from "../../assets/dividers/divider-3.webp";
+import divider4 from "../../assets/dividers/divider-4.webp";
+import divider5 from "../../assets/dividers/divider-5.webp";
+import divider6 from "../../assets/dividers/divider-6.webp";
 
 const sectionDividerImages = [
   divider1,

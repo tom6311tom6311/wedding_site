@@ -6,6 +6,8 @@ type HeroProps = {
   hero: WeddingContent["hero"];
 };
 
+const INITIAL_CAROUSEL_DELAY_MS = 12_000;
+
 export function HeroSection({ hero }: HeroProps) {
   const slides = hero.images && hero.images.length > 0 ? hero.images : [hero.image];
   const carouselIntervalMs = hero.carousel.intervalMs;
@@ -22,11 +24,20 @@ export function HeroSection({ hero }: HeroProps) {
       return;
     }
 
-    const interval = window.setInterval(() => {
-      setActiveSlide((current) => (current + 1) % slides.length);
-    }, carouselIntervalMs);
+    let interval: number | undefined;
+    const timeout = window.setTimeout(() => {
+      interval = window.setInterval(() => {
+        setActiveSlide((current) => (current + 1) % slides.length);
+      }, carouselIntervalMs);
+    }, INITIAL_CAROUSEL_DELAY_MS);
 
-    return () => window.clearInterval(interval);
+    return () => {
+      window.clearTimeout(timeout);
+
+      if (interval) {
+        window.clearInterval(interval);
+      }
+    };
   }, [carouselIntervalMs, slides.length]);
 
   return (
@@ -72,7 +83,7 @@ function HeroDecorations() {
     <>
       <img
         className="hero__decoration hero__decoration--top"
-        src="/images/hero-rose-top-right.png"
+        src="/images/hero-rose-top-right.webp"
         alt=""
         aria-hidden="true"
         decoding="async"
@@ -80,7 +91,7 @@ function HeroDecorations() {
       />
       <img
         className="hero__decoration hero__decoration--bottom"
-        src="/images/hero-rose-bottom-left.png"
+        src="/images/hero-rose-bottom-left.webp"
         alt=""
         aria-hidden="true"
         decoding="async"

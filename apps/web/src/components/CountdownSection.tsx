@@ -55,14 +55,14 @@ export function CountdownSection({ countdown }: CountdownSectionProps) {
     <section className="page-section countdown-section" id="countdown">
       <img
         className="countdown-decor countdown-decor--branch"
-        src="/images/decorations.local/countdown-branch.png"
+        src="/images/decorations.local/countdown-branch.webp"
         alt=""
         aria-hidden="true"
         loading="lazy"
       />
       <img
         className="countdown-decor countdown-decor--picnic"
-        src="/images/decorations.local/countdown-picnic.png"
+        src="/images/decorations.local/countdown-picnic.webp"
         alt=""
         aria-hidden="true"
         loading="lazy"

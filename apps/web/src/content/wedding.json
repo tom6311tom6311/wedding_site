@@ -123,7 +123,7 @@
     "dateLine": "October 18, 2026 · Taipei",
     "message": "We are getting married, and it would mean the world to celebrate this day with the people we love most.",
     "image": {
-      "src": "/images/hero-placeholder.png",
+      "src": "/images/hero-placeholder.webp",
       "alt": "A romantic garden wedding scene at golden hour"
     },
     "carousel": {
@@ -172,14 +172,14 @@
         "role": "Bride",
         "name": "Emma",
         "image": {
-          "src": "/images/hero-placeholder.png",
+          "src": "/images/hero-placeholder.webp",
           "alt": "Portrait placeholder for the bride"
         },
         "introduction": "Loves quiet mornings, handwritten notes, and gathering the people she loves around one table.",
         "parents": {
           "title": "Bride's parents",
           "image": {
-            "src": "/images/hero-placeholder.png",
+            "src": "/images/hero-placeholder.webp",
             "alt": "Portrait placeholder for the bride's parents"
           },
           "dad": {
@@ -198,14 +198,14 @@
         "role": "Groom",
         "name": "Noah",
         "image": {
-          "src": "/images/hero-placeholder.png",
+          "src": "/images/hero-placeholder.webp",
           "alt": "Portrait placeholder for the groom"
         },
         "introduction": "Brings steady warmth, a ready laugh, and a habit of making every ordinary day feel cared for.",
         "parents": {
           "title": "Groom's parents",
           "image": {
-            "src": "/images/hero-placeholder.png",
+            "src": "/images/hero-placeholder.webp",
             "alt": "Portrait placeholder for the groom's parents"
           },
           "dad": {
@@ -227,7 +227,7 @@
     "title": "A few chapters before the big day.",
     "fallbackImages": [
       {
-        "src": "/images/hero-placeholder.png",
+        "src": "/images/hero-placeholder.webp",
         "alt": "Wedding story photo"
       }
     ],
@@ -387,21 +387,21 @@
       {
         "id": "garden",
         "title": "Garden Moment",
-        "src": "/images/hero-placeholder.png",
+        "src": "/images/hero-placeholder.webp",
         "alt": "A romantic garden wedding scene",
         "hint": "Start with the corners."
       },
       {
         "id": "couple",
         "title": "Couple Portrait",
-        "src": "/images/hero-placeholder.png",
+        "src": "/images/hero-placeholder.webp",
         "alt": "A wedding portrait",
         "hint": "Match the brightest edges first."
       },
       {
         "id": "celebration",
         "title": "Celebration",
-        "src": "/images/hero-placeholder.png",
+        "src": "/images/hero-placeholder.webp",
         "alt": "A wedding celebration photo",
         "hint": "Look for continuous lines."
       }

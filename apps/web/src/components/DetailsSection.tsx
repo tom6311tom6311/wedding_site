@@ -1,5 +1,5 @@
 import type { WeddingContent } from "../content/types";
-import lemonDrinks from "../assets/decorations/lemon-drinks.png";
+import lemonDrinks from "../assets/decorations/lemon-drinks.webp";
 
 type DetailsSectionProps = {
   venue: WeddingContent["venue"];

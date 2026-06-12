@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { WeddingContent } from "../content/types";
-import picnicBike from "../assets/decorations/picnic-bike.png";
+import picnicBike from "../assets/decorations/picnic-bike.webp";
 
 type ScheduleImage = NonNullable<
   WeddingContent["schedule"]["events"][number]["images"]

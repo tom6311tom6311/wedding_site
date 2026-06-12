@@ -1,8 +1,8 @@
 import { useEffect, useId, useRef, useState } from "react";
 import type { Dispatch, FormEvent, SetStateAction } from "react";
 import type { WeddingContent } from "../content/types";
-import mailbox from "../assets/decorations/mailbox.png";
-import ringPillow from "../assets/decorations/ring-pillow.png";
+import mailbox from "../assets/decorations/mailbox.webp";
+import ringPillow from "../assets/decorations/ring-pillow.webp";
 
 type RsvpSectionProps = {
   rsvp: WeddingContent["rsvp"];
