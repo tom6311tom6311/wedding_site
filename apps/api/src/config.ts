@@ -1,6 +1,7 @@
 export type AppConfig = {
   databaseUrl: string;
   databaseSslCaFile?: string;
+  databaseSslRejectUnauthorized: boolean;
   host: string;
   port: number;
   webOrigin: string;
@@ -16,6 +17,8 @@ export function loadConfig(): AppConfig {
       readEnv("DATABASE_URL") ??
       "postgres://wedding:wedding@localhost:5432/wedding",
     databaseSslCaFile: readEnv("DATABASE_SSL_CA_FILE"),
+    databaseSslRejectUnauthorized:
+      readEnv("DATABASE_SSL_REJECT_UNAUTHORIZED") !== "false",
     host: readEnv("HOST") ?? "0.0.0.0",
     port: Number(readEnv("PORT") ?? 4000),
     webOrigin: readEnv("WEB_ORIGIN") ?? "http://localhost:5173",

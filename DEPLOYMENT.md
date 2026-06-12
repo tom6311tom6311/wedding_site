@@ -80,6 +80,7 @@ Edit values:
 ```env
 DATABASE_URL=postgres://wedding:your-rds-password@your-rds-endpoint.region.rds.amazonaws.com:5432/wedding?sslmode=verify-full
 DATABASE_SSL_CA_FILE=/app/apps/api/certs/global-bundle.pem
+DATABASE_SSL_REJECT_UNAUTHORIZED=true
 WEB_ORIGIN=https://your-domain.example
 PHONE_HASH_SECRET=use-a-long-random-secret
 BROWSER_TOKEN_SECRET=use-another-long-random-secret

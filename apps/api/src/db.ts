@@ -26,27 +26,30 @@ export type PhotoUnlockRow = {
 };
 
 export function createPool(config: AppConfig) {
+  const database = parseDatabaseUrl(config.databaseUrl);
   const ssl = config.databaseSslCaFile
     ? {
         ca: readFileSync(config.databaseSslCaFile, "utf8"),
-        rejectUnauthorized: true,
+        rejectUnauthorized: config.databaseSslRejectUnauthorized,
       }
     : undefined;
 
   return new pg.Pool({
-    connectionString: ssl ? removeSslParams(config.databaseUrl) : config.databaseUrl,
+    ...database,
     ssl,
   });
 }
 
-function removeSslParams(databaseUrl: string) {
+function parseDatabaseUrl(databaseUrl: string) {
   const url = new URL(databaseUrl);
 
-  for (const parameter of ["sslmode", "sslrootcert", "sslcert", "sslkey"]) {
-    url.searchParams.delete(parameter);
-  }
-
-  return url.toString();
+  return {
+    database: decodeURIComponent(url.pathname.replace(/^\//, "")),
+    host: url.hostname,
+    password: decodeURIComponent(url.password),
+    port: url.port ? Number(url.port) : 5432,
+    user: decodeURIComponent(url.username),
+  };
 }
 
 export async function migrate(pool: pg.Pool) {
