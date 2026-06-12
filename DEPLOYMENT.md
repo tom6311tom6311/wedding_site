@@ -82,6 +82,8 @@ DATABASE_URL=postgres://wedding:your-rds-password@your-rds-endpoint.region.rds.a
 WEB_ORIGIN=https://your-domain.example
 PHONE_HASH_SECRET=use-a-long-random-secret
 BROWSER_TOKEN_SECRET=use-another-long-random-secret
+ADMIN_PASSWORD=use-a-strong-admin-password
+ADMIN_TOKEN_SECRET=use-a-third-long-random-secret
 
 WEB_HTTP_PORT=80
 VITE_RSVP_API_BASE_URL=
@@ -93,7 +95,11 @@ Generate app secrets:
 openssl rand -hex 32
 ```
 
+Generate separate values for `PHONE_HASH_SECRET`, `BROWSER_TOKEN_SECRET`, and `ADMIN_TOKEN_SECRET`.
+`ADMIN_PASSWORD` guards the `/admin` page, so use a strong value that is not reused elsewhere.
+
 `VITE_RSVP_API_BASE_URL` is intentionally empty. The browser calls same-origin `/api/...`, and Nginx proxies those requests to the API container.
+The admin page is served at `/admin`; Nginx falls back to the React app for that route, and the browser authenticates against `/api/admin/login`.
 
 ## 6. Start
 
