@@ -252,7 +252,13 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
                     required={field.required}
                     invalid={invalidFields.has(field.name)}
                     onChange={(value) =>
-                      updateFieldValue(field.name, value, setInitialValues, setInvalidFields)
+                      updateFieldValue(
+                        field.name,
+                        value,
+                        setInitialValues,
+                        setInvalidFields,
+                        rsvp,
+                      )
                     }
                   />
                 ) : field.type === "textarea" ? (
@@ -269,6 +275,7 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
                         event.target.value,
                         setInitialValues,
                         setInvalidFields,
+                        rsvp,
                       )
                     }
                   />
@@ -281,7 +288,13 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
                     required={field.required}
                     invalid={invalidFields.has(field.name)}
                     onChange={(value) =>
-                      updateFieldValue(field.name, value, setInitialValues, setInvalidFields)
+                      updateFieldValue(
+                        field.name,
+                        value,
+                        setInitialValues,
+                        setInvalidFields,
+                        rsvp,
+                      )
                     }
                   />
                 ) : (
@@ -301,6 +314,7 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
                         event.target.value,
                         setInitialValues,
                         setInvalidFields,
+                        rsvp,
                       )
                     }
                   />
@@ -481,9 +495,13 @@ function normalizeConditionalValues(values: RsvpFormValues, rsvp: WeddingContent
 }
 
 function isAttendingResponse(values: Pick<RsvpFormValues, "attendance">, rsvp: WeddingContent["rsvp"]) {
+  return isAttendingValue(values.attendance, rsvp);
+}
+
+function isAttendingValue(value: string, rsvp: WeddingContent["rsvp"]) {
   const attendingOption = rsvp.fields.find((field) => field.name === "attendance")?.options?.[0];
 
-  return Boolean(attendingOption && values.attendance === attendingOption);
+  return Boolean(attendingOption && value === attendingOption);
 }
 
 function validateRsvpPayload(
@@ -601,18 +619,29 @@ function updateFieldValue(
   value: string,
   setValues: Dispatch<SetStateAction<Record<string, string>>>,
   setInvalidFields: Dispatch<SetStateAction<Set<string>>>,
+  rsvp: WeddingContent["rsvp"],
 ) {
   setValues((current) => ({
     ...current,
     [name]: value,
+    ...(name === "attendance" &&
+    isAttendingValue(value, rsvp) &&
+    (!current.guests || current.guests === "0")
+      ? { guests: "1" }
+      : null),
   }));
   setInvalidFields((current) => {
-    if (!current.has(name)) {
+    if (!current.has(name) && !(name === "attendance" && current.has("guests"))) {
       return current;
     }
 
     const next = new Set(current);
     next.delete(name);
+
+    if (name === "attendance" && isAttendingValue(value, rsvp)) {
+      next.delete("guests");
+    }
+
     return next;
   });
 }
