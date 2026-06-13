@@ -426,6 +426,12 @@
       "updateSuccess": "Your RSVP has been updated.",
       "submitError": "Failed to submit RSVP. Please try again later."
     },
+    "phoneChangeModal": {
+      "title": "Use a different phone number?",
+      "body": "Editing the phone number starts a completely new RSVP record on this device. Your current form details and puzzle progress will be cleared.",
+      "confirmLabel": "Start a new RSVP",
+      "cancelLabel": "Keep this RSVP"
+    },
     "selectPlaceholder": "Please select",
     "requiredAriaLabel": "required",
     "fields": [

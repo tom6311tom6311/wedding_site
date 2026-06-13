@@ -323,6 +323,12 @@ export type WeddingContent = {
       updateSuccess: string;
       submitError: string;
     };
+    phoneChangeModal: {
+      title: string;
+      body: string;
+      confirmLabel: string;
+      cancelLabel: string;
+    };
     selectPlaceholder: string;
     requiredAriaLabel: string;
     fields: Array<{

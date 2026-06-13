@@ -3720,6 +3720,39 @@ a:focus:not(:focus-visible) {
   font-weight: 300;
 }
 
+.rsvp-locked-phone {
+  display: block;
+  width: 100%;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.rsvp-locked-phone input {
+  pointer-events: none;
+}
+
+.rsvp-locked-phone input:disabled {
+  border-color: rgba(73, 55, 45, 0.14);
+  background: rgba(238, 229, 220, 0.72);
+  color: rgba(74, 61, 54, 0.72);
+  cursor: pointer;
+  -webkit-text-fill-color: rgba(74, 61, 54, 0.72);
+}
+
+.rsvp-locked-phone:hover input:disabled {
+  border-color: rgba(138, 88, 70, 0.36);
+  background: rgba(255, 250, 245, 0.86);
+}
+
+.rsvp-locked-phone:focus-visible {
+  outline: 0;
+}
+
+.rsvp-locked-phone:focus-visible input:disabled {
+  border-color: rgba(138, 88, 70, 0.54);
+  box-shadow: 0 0 0 4px rgba(138, 88, 70, 0.14);
+}
+
 .rsvp-form input[aria-invalid="true"],
 .rsvp-form textarea[aria-invalid="true"] {
   border-color: rgba(138, 88, 70, 0.72);
@@ -3909,6 +3942,77 @@ a:focus:not(:focus-visible) {
   background: rgba(47, 41, 36, 0.38);
   cursor: not-allowed;
   opacity: 0.68;
+}
+
+.rsvp-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 4vw, 2rem);
+  background: rgba(31, 23, 18, 0.42);
+}
+
+.rsvp-modal__panel {
+  display: grid;
+  width: min(100%, 28rem);
+  gap: 1rem;
+  border: 1px solid rgba(73, 55, 45, 0.14);
+  border-radius: 8px;
+  padding: clamp(1.35rem, 4vw, 2rem);
+  background: #fffaf5;
+  box-shadow: 0 24px 70px rgba(31, 23, 18, 0.22);
+}
+
+.rsvp-modal__panel h3 {
+  margin: 0;
+  color: #4a3d36;
+  font-size: clamp(1.35rem, 4vw, 1.75rem);
+  line-height: 1.2;
+}
+
+.rsvp-modal__panel p {
+  margin: 0;
+  color: #6a554b;
+  line-height: 1.55;
+}
+
+.rsvp-modal__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.rsvp-modal__actions button {
+  min-height: 2.85rem;
+  border-radius: 999px;
+  padding: 0.65rem 1.1rem;
+  cursor: pointer;
+  font: inherit;
+  line-height: 1.2;
+}
+
+.rsvp-modal__actions button:first-child {
+  border: 0;
+  background: #2f2924;
+  color: #fffaf5;
+}
+
+.rsvp-modal__actions button:last-child {
+  border: 1px solid rgba(73, 55, 45, 0.18);
+  background: transparent;
+  color: #4a3d36;
+}
+
+.rsvp-modal__actions button:hover {
+  transform: translateY(-1px);
+}
+
+.rsvp-modal__actions button:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 4px rgba(138, 88, 70, 0.16);
 }
 
 @media (max-width: 720px) {

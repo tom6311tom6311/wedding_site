@@ -54,6 +54,7 @@ const RSVP_API_BASE_URL =
   import.meta.env.VITE_RSVP_API_BASE_URL ?? "http://localhost:4000";
 const RSVP_BROWSER_TOKEN_STORAGE_KEY = "wedding-site:rsvp-token";
 const RSVP_TOKEN_UPDATED_EVENT = "wedding-site:rsvp-token-updated";
+const RSVP_RECORD_RESET_EVENT = "wedding-site:rsvp-record-reset";
 const PUZZLE_STATE_STORAGE_KEY_PREFIX = "wedding-site:puzzle-state:v3";
 const DEFAULT_PUZZLE_DIFFICULTY_TIERS: PuzzleDifficultyTier[] = [
   { startsAt: 1, rows: 2, columns: 3 },
@@ -105,6 +106,7 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
       const browserToken = window.localStorage.getItem(RSVP_BROWSER_TOKEN_STORAGE_KEY);
 
       if (!browserToken) {
+        resetPuzzleSession();
         return;
       }
 
@@ -135,12 +137,19 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
       void loadPuzzleState();
     }
 
+    function handleRecordReset() {
+      clearAllStoredPuzzleStates();
+      resetPuzzleSession();
+    }
+
     void loadPuzzleState();
     window.addEventListener(RSVP_TOKEN_UPDATED_EVENT, handleTokenUpdated);
+    window.addEventListener(RSVP_RECORD_RESET_EVENT, handleRecordReset);
 
     return () => {
       cancelled = true;
       window.removeEventListener(RSVP_TOKEN_UPDATED_EVENT, handleTokenUpdated);
+      window.removeEventListener(RSVP_RECORD_RESET_EVENT, handleRecordReset);
     };
   }, []);
 
@@ -169,6 +178,24 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
   useEffect(() => {
     unlockedPhotoIds.forEach((photoId) => clearStoredPuzzleState(photoId));
   }, [unlockedPhotoIds]);
+
+  function resetPuzzleSession() {
+    setGuest(null);
+    setUnlockedPhotoIds([]);
+    setPuzzleRank(null);
+    setActivePhoto(null);
+    setViewingPhoto(null);
+    setShouldReturnToCloset(false);
+    setIsClosetOpen(false);
+    setTileOrder([]);
+    setSelectedTileIndex(null);
+    setActivePuzzleDimensions(getPuzzleDimensions(puzzle.difficultyTiers, 1));
+    setIsSolved(false);
+    setStatus(null);
+    setIsIdentifying(false);
+    setIsLookupOpen(false);
+    setIsPuzzleHelpOpen(false);
+  }
 
   function startPuzzle(photo: PuzzlePhoto, puzzleNumber = unlockedPhotoIds.length + 1) {
     if (!guest) {
@@ -841,6 +868,16 @@ function saveStoredPuzzleState(photoId: string, state: StoredPuzzleState) {
 function clearStoredPuzzleState(photoId: string) {
   try {
     window.localStorage.removeItem(getPuzzleStateStorageKey(photoId));
+  } catch {
+    // Ignore storage failures.
+  }
+}
+
+function clearAllStoredPuzzleStates() {
+  try {
+    Object.keys(window.localStorage)
+      .filter((key) => key.startsWith(`${PUZZLE_STATE_STORAGE_KEY_PREFIX}:`))
+      .forEach((key) => window.localStorage.removeItem(key));
   } catch {
     // Ignore storage failures.
   }

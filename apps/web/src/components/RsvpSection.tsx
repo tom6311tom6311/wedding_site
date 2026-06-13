@@ -40,6 +40,7 @@ const RSVP_API_BASE_URL =
   import.meta.env.VITE_RSVP_API_BASE_URL ?? "http://localhost:4000";
 const RSVP_BROWSER_TOKEN_STORAGE_KEY = "wedding-site:rsvp-token";
 const RSVP_TOKEN_UPDATED_EVENT = "wedding-site:rsvp-token-updated";
+const RSVP_RECORD_RESET_EVENT = "wedding-site:rsvp-record-reset";
 
 export function RsvpSection({ rsvp }: RsvpSectionProps) {
   const formRef = useRef<HTMLFormElement>(null);
@@ -48,6 +49,7 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [invalidFields, setInvalidFields] = useState<Set<string>>(() => new Set());
   const [status, setStatus] = useState<RsvpStatus | null>(null);
+  const [isPhoneChangeModalOpen, setIsPhoneChangeModalOpen] = useState(false);
   const currentValues = normalizeConditionalValues(toComparableValues(initialValues), rsvp);
   const savedComparableValues = savedValues
     ? normalizeConditionalValues(savedValues, rsvp)
@@ -108,14 +110,29 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
       void loadStoredRsvp();
     }
 
+    function handleRecordReset() {
+      setInitialValues({});
+      setSavedValues(null);
+      setInvalidFields(new Set());
+      setStatus(null);
+      setIsPhoneChangeModalOpen(false);
+    }
+
     void loadStoredRsvp();
     window.addEventListener(RSVP_TOKEN_UPDATED_EVENT, handleTokenUpdated);
+    window.addEventListener(RSVP_RECORD_RESET_EVENT, handleRecordReset);
 
     return () => {
       cancelled = true;
       window.removeEventListener(RSVP_TOKEN_UPDATED_EVENT, handleTokenUpdated);
+      window.removeEventListener(RSVP_RECORD_RESET_EVENT, handleRecordReset);
     };
   }, []);
+
+  function handleStartNewRsvp() {
+    window.localStorage.removeItem(RSVP_BROWSER_TOKEN_STORAGE_KEY);
+    window.dispatchEvent(new Event(RSVP_RECORD_RESET_EVENT));
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -297,6 +314,35 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
                       )
                     }
                   />
+                ) : field.name === "phone" && hasSavedResponse ? (
+                  <div
+                    className="rsvp-locked-phone"
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`${field.label}: ${initialValues[field.name] ?? ""}`}
+                    onClick={() => setIsPhoneChangeModalOpen(true)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        setIsPhoneChangeModalOpen(true);
+                      }
+                    }}
+                  >
+                    <input
+                      type={field.type}
+                      placeholder={field.placeholder}
+                      value={initialValues[field.name] ?? ""}
+                      aria-invalid={invalidFields.has(field.name)}
+                      disabled
+                      readOnly
+                    />
+                    <input
+                      name={field.name}
+                      type="hidden"
+                      value={initialValues[field.name] ?? ""}
+                      readOnly
+                    />
+                  </div>
                 ) : (
                   <input
                     name={field.name}
@@ -330,6 +376,28 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
           </form>
         </div>
       </div>
+      {isPhoneChangeModalOpen ? (
+        <div
+          className="rsvp-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="rsvp-phone-change-title"
+          onClick={() => setIsPhoneChangeModalOpen(false)}
+        >
+          <div className="rsvp-modal__panel" onClick={(event) => event.stopPropagation()}>
+            <h3 id="rsvp-phone-change-title">{rsvp.phoneChangeModal.title}</h3>
+            <p>{rsvp.phoneChangeModal.body}</p>
+            <div className="rsvp-modal__actions">
+              <button type="button" onClick={handleStartNewRsvp}>
+                {rsvp.phoneChangeModal.confirmLabel}
+              </button>
+              <button type="button" onClick={() => setIsPhoneChangeModalOpen(false)}>
+                {rsvp.phoneChangeModal.cancelLabel}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }
