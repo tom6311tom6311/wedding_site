@@ -53,6 +53,12 @@ function setStableViewportHeight() {
       "--stable-viewport-height",
       `${Math.round(height)}px`,
     );
+    document.documentElement.style.setProperty(
+      "--stable-vh",
+      `${height / 100}px`,
+    );
+    document.documentElement.dataset.stableViewportHeight =
+      height <= 720 ? "short" : "default";
   };
 
   const handleResize = () => {

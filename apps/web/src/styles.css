@@ -15,6 +15,7 @@
   --section-padding-inline: clamp(1.25rem, 5vw, 5rem);
   --hero-card-margin: clamp(0.9rem, 1.6vw, 1.75rem);
   --stable-viewport-height: 100svh;
+  --stable-vh: 1svh;
   --font-fallback: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
   --font-main: "ChenYu LuoYan", var(--font-fallback);
@@ -1026,7 +1027,7 @@ a:focus:not(:focus-visible) {
 .story-section {
   min-height: var(--stable-viewport-height);
   overflow: visible;
-  padding-block: clamp(2rem, 4.5svh, 3.25rem);
+  padding-block: clamp(2rem, calc(var(--stable-vh) * 4.5), 3.25rem);
   background: var(--section-background);
 }
 
@@ -1035,18 +1036,18 @@ a:focus:not(:focus-visible) {
 }
 
 .story-section .section-heading {
-  margin-bottom: clamp(1rem, 2.5svh, 1.75rem);
+  margin-bottom: clamp(1rem, calc(var(--stable-vh) * 2.5), 1.75rem);
 }
 
 .story-section .section-heading h2 {
-  font-size: clamp(2.4rem, 5.2svh, 4.4rem);
+  font-size: clamp(2.4rem, calc(var(--stable-vh) * 5.2), 4.4rem);
 }
 
 .story-stage {
   position: relative;
   display: grid;
   justify-items: center;
-  gap: clamp(0.45rem, 1.1svh, 0.8rem);
+  gap: clamp(0.45rem, calc(var(--stable-vh) * 1.1), 0.8rem);
   overflow: visible;
 }
 
@@ -1055,7 +1056,10 @@ a:focus:not(:focus-visible) {
   z-index: 1;
   display: grid;
   width: min(100%, 22.4rem, calc((var(--stable-viewport-height) - 10rem) * 0.68));
-  height: min(clamp(27.5rem, 68svh, 36rem), calc(var(--stable-viewport-height) - 9.5rem));
+  height: min(
+    clamp(27.5rem, calc(var(--stable-vh) * 68), 36rem),
+    calc(var(--stable-viewport-height) - 9.5rem)
+  );
   place-items: center;
   isolation: isolate;
   perspective: 46rem;
@@ -1072,11 +1076,12 @@ a:focus:not(:focus-visible) {
   width: min(100%, 20.8rem, calc((var(--stable-viewport-height) - 10rem) * 0.63));
   align-items: start;
   justify-items: center;
-  gap: clamp(0.5rem, 1.15svh, 0.82rem);
+  gap: clamp(0.5rem, calc(var(--stable-vh) * 1.15), 0.82rem);
   border: 1px solid rgba(111, 73, 53, 0.12);
   border-radius: 3px;
-  padding: clamp(0.48rem, 1svh, 0.68rem) clamp(0.48rem, 1svh, 0.68rem)
-    clamp(0.85rem, 2.1svh, 1.2rem);
+  padding: clamp(0.48rem, var(--stable-vh), 0.68rem)
+    clamp(0.48rem, var(--stable-vh), 0.68rem)
+    clamp(0.85rem, calc(var(--stable-vh) * 2.1), 1.2rem);
   background: #fffdf8;
   box-shadow:
     0 0.55rem 1rem rgba(83, 59, 39, 0.1),
@@ -1219,7 +1224,7 @@ a:focus:not(:focus-visible) {
 
 .story-card__copy span {
   display: inline-block;
-  margin-top: clamp(0.14rem, 0.45svh, 0.28rem);
+  margin-top: clamp(0.14rem, calc(var(--stable-vh) * 0.45), 0.28rem);
   color: #9b6a50;
   font-size: 1.3rem;
   font-weight: 800;
@@ -1227,16 +1232,16 @@ a:focus:not(:focus-visible) {
 
 .story-card__copy h3 {
   color: #2d2722;
-  font-size: clamp(1.8rem, 4.8svh, 3rem);
+  font-size: clamp(1.8rem, calc(var(--stable-vh) * 4.8), 3rem);
   font-weight: 400;
   line-height: 1;
 }
 
 .story-card__copy p {
   max-width: 24rem;
-  margin: clamp(0.12rem, 0.35svh, 0.28rem) 0 0;
+  margin: clamp(0.12rem, calc(var(--stable-vh) * 0.35), 0.28rem) 0 0;
   color: #6a554b;
-  font-size: clamp(1.7rem, 3.9svh, 2.25rem);
+  font-size: clamp(1.7rem, calc(var(--stable-vh) * 3.9), 2.25rem);
   line-height: 1.18;
 }
 
@@ -1810,7 +1815,7 @@ a:focus:not(:focus-visible) {
   width: auto;
   height: auto;
   max-width: min(72rem, calc(100svw - var(--image-viewer-padding) * 2));
-  max-height: calc(100svh - var(--image-viewer-padding) * 2);
+  max-height: calc(var(--stable-viewport-height) - var(--image-viewer-padding) * 2);
   border: 0.5rem solid rgba(255, 250, 245, 0.9);
   border-radius: 1.35rem;
   box-shadow: 0 1.5rem 4rem rgba(31, 23, 18, 0.34);
@@ -2307,21 +2312,27 @@ a:focus:not(:focus-visible) {
 }
 
 .puzzle-modal__panel {
-  --puzzle-board-max-height: max(12rem, min(62svh, calc(100svh - 16rem)));
-  max-height: calc(100svh - var(--puzzle-modal-padding) * 2);
-  gap: clamp(0.55rem, 1.6svh, 1rem);
+  --puzzle-board-max-height: max(
+    12rem,
+    min(calc(var(--stable-vh) * 62), calc(var(--stable-viewport-height) - 16rem))
+  );
+  max-height: calc(var(--stable-viewport-height) - var(--puzzle-modal-padding) * 2);
+  gap: clamp(0.55rem, calc(var(--stable-vh) * 1.6), 1rem);
   overflow: hidden;
-  padding: clamp(0.78rem, 2.3svh, 1.25rem);
+  padding: clamp(0.78rem, calc(var(--stable-vh) * 2.3), 1.25rem);
 }
 
 .puzzle-closet__panel {
   width: min(100%, 58rem);
-  max-height: 92svh;
+  max-height: calc(var(--stable-vh) * 92);
   overflow-y: auto;
 }
 
 .puzzle-modal__panel--solved {
-  --puzzle-board-max-height: max(10rem, min(50svh, calc(100svh - 22rem)));
+  --puzzle-board-max-height: max(
+    10rem,
+    min(calc(var(--stable-vh) * 50), calc(var(--stable-viewport-height) - 22rem))
+  );
   overflow: hidden;
   background:
     radial-gradient(circle at 50% 8%, rgba(234, 181, 76, 0.22), transparent 34%),
@@ -2433,7 +2444,7 @@ a:focus:not(:focus-visible) {
   position: relative;
   display: grid;
   justify-items: center;
-  min-height: clamp(2.8rem, 6svh, 3.6rem);
+  min-height: clamp(2.8rem, calc(var(--stable-vh) * 6), 3.6rem);
   place-content: center;
   overflow: hidden;
   border: 1px solid rgba(234, 181, 76, 0.28);
@@ -3844,7 +3855,7 @@ a:focus:not(:focus-visible) {
   left: 0;
   z-index: 20;
   display: grid;
-  max-height: min(17rem, 42vh);
+  max-height: min(17rem, calc(var(--stable-vh) * 42));
   overflow-y: auto;
   border: 1px solid rgba(111, 73, 53, 0.18);
   border-radius: 8px;
@@ -4298,13 +4309,19 @@ a:focus:not(:focus-visible) {
   }
 
   .puzzle-modal__panel {
-    --puzzle-board-max-height: max(15rem, min(58svh, calc(100svh - 13.5rem)));
+    --puzzle-board-max-height: max(
+      15rem,
+      min(calc(var(--stable-vh) * 58), calc(var(--stable-viewport-height) - 13.5rem))
+    );
     gap: 0.55rem;
     padding: 0.7rem;
   }
 
   .puzzle-modal__panel--solved {
-    --puzzle-board-max-height: max(11rem, min(42svh, calc(100svh - 20rem)));
+    --puzzle-board-max-height: max(
+      11rem,
+      min(calc(var(--stable-vh) * 42), calc(var(--stable-viewport-height) - 20rem))
+    );
   }
 
   .puzzle-modal__copy h3 {
@@ -4338,299 +4355,305 @@ a:focus:not(:focus-visible) {
   }
 }
 
-@media (max-width: 560px) and (max-height: 720px) {
-  :root {
+@media (max-width: 560px) {
+  :root[data-stable-viewport-height="short"] {
     --hero-card-margin: clamp(0.75rem, 3.5vw, 1.2rem);
-    --section-padding-block: clamp(2.4rem, 8svh, 3.5rem);
+    --section-padding-block: clamp(2.4rem, calc(var(--stable-vh) * 8), 3.5rem);
     --section-padding-inline: clamp(0.9rem, 4vw, 1.25rem);
   }
 
-  .page-section {
+  :root[data-stable-viewport-height="short"] .page-section {
     padding-block: var(--section-padding-block);
   }
 
-  .section-divider {
+  :root[data-stable-viewport-height="short"] .section-divider {
     padding-block: clamp(1.15rem, 7vw, 2rem);
   }
 
-  .section-divider__art {
+  :root[data-stable-viewport-height="short"] .section-divider__art {
     width: min(32rem, 86vw);
   }
 
-  .hero {
+  :root[data-stable-viewport-height="short"] .hero {
     min-height: max(28rem, calc(var(--stable-viewport-height) - var(--hero-card-margin) - var(--hero-card-margin)));
   }
 
-  .hero::after {
+  :root[data-stable-viewport-height="short"] .hero::after {
     inset: 0.45rem;
   }
 
-  .hero__content {
+  :root[data-stable-viewport-height="short"] .hero__content {
     padding: 4.15rem 0.9rem 2.9rem;
   }
 
-  .hero__decoration--top {
+  :root[data-stable-viewport-height="short"] .hero__decoration--top {
     width: min(44vw, 12rem);
   }
 
-  .hero__decoration--bottom {
+  :root[data-stable-viewport-height="short"] .hero__decoration--bottom {
     width: min(56vw, 15rem);
   }
 
-  .hero__carousel-indicators {
+  :root[data-stable-viewport-height="short"] .hero__carousel-indicators {
     right: 0.8rem;
     bottom: 3.7rem;
   }
 
-  .hero__eyebrow,
-  .hero__date {
+  :root[data-stable-viewport-height="short"] .hero__eyebrow,
+  :root[data-stable-viewport-height="short"] .hero__date {
     font-size: 1.28rem;
   }
 
-  .hero__names {
+  :root[data-stable-viewport-height="short"] .hero__names {
     gap: clamp(0.45rem, 2.8vw, 0.85rem);
     font-size: clamp(1.75rem, 12vw, 3.15rem);
   }
 
-  .hero__date {
+  :root[data-stable-viewport-height="short"] .hero__date {
     margin-top: 1rem;
   }
 
-  .hero__message {
+  :root[data-stable-viewport-height="short"] .hero__message {
     max-width: 28rem;
     margin-top: 0.9rem;
     font-size: clamp(1.28rem, 5.6vw, 1.42rem);
     line-height: 1.45;
   }
 
-  .hero__actions {
+  :root[data-stable-viewport-height="short"] .hero__actions {
     margin-top: 1.35rem;
   }
 
-  .button {
+  :root[data-stable-viewport-height="short"] .button {
     min-height: 2.75rem;
     padding: 0.7rem 1.05rem;
     font-size: 1.28rem;
   }
 
-  .music-widget {
+  :root[data-stable-viewport-height="short"] .music-widget {
     right: max(0.8rem, env(safe-area-inset-right));
     bottom: max(0.8rem, env(safe-area-inset-bottom));
   }
 
-  .music-control {
+  :root[data-stable-viewport-height="short"] .music-control {
     width: 2.55rem;
     height: 2.55rem;
   }
 
-  .page-section h2,
-  .section-heading h2 {
+  :root[data-stable-viewport-height="short"] .page-section h2,
+  :root[data-stable-viewport-height="short"] .section-heading h2 {
     font-size: clamp(2.2rem, 13vw, 3.75rem);
     line-height: 1;
   }
 
-  .section-heading {
+  :root[data-stable-viewport-height="short"] .section-heading {
     gap: 0.65rem;
-    margin-bottom: clamp(1.25rem, 5svh, 2rem);
+    margin-bottom: clamp(1.25rem, calc(var(--stable-vh) * 5), 2rem);
   }
 
-  .section-eyebrow {
+  :root[data-stable-viewport-height="short"] .section-eyebrow {
     margin-bottom: 0.65rem;
     font-size: clamp(1.28rem, 4.8vw, 1.42rem);
   }
 
-  .page-section p,
-  .page-section li {
+  :root[data-stable-viewport-height="short"] .page-section p,
+  :root[data-stable-viewport-height="short"] .page-section li {
     font-size: clamp(1.28rem, 5vw, 1.42rem);
     line-height: 1.62;
   }
 
-  .intro-section,
-  .story-section {
+  :root[data-stable-viewport-height="short"] .intro-section,
+  :root[data-stable-viewport-height="short"] .story-section {
     min-height: auto;
   }
 
-  .countdown-inner {
+  :root[data-stable-viewport-height="short"] .countdown-inner {
     min-height: max(26rem, calc(var(--stable-viewport-height) - var(--section-padding-block) - var(--section-padding-block)));
   }
 
-  .countdown-display {
+  :root[data-stable-viewport-height="short"] .countdown-display {
     padding-block: 0.45rem;
   }
 
-  .countdown-unit strong {
+  :root[data-stable-viewport-height="short"] .countdown-unit strong {
     font-size: clamp(1.8rem, 12vw, 2.9rem);
   }
 
-  .welcome-feature {
+  :root[data-stable-viewport-height="short"] .welcome-feature {
     width: min(11.5rem, 48vw);
     margin-bottom: 0.8rem;
   }
 
-  .intro-section p:not(.section-eyebrow) {
+  :root[data-stable-viewport-height="short"] .intro-section p:not(.section-eyebrow) {
     padding-inline: 0.25rem;
   }
 
-  .details-grid {
+  :root[data-stable-viewport-height="short"] .details-grid {
     gap: clamp(1.4rem, 7vw, 2.3rem);
   }
 
-  .detail-panel {
+  :root[data-stable-viewport-height="short"] .detail-panel {
     border-radius: 8px;
     padding: clamp(1rem, 5vw, 1.35rem);
   }
 
-  .detail-map-panel {
+  :root[data-stable-viewport-height="short"] .detail-map-panel {
     --details-panel-radius: 8px;
   }
 
-  .detail-map-panel iframe {
+  :root[data-stable-viewport-height="short"] .detail-map-panel iframe {
     height: clamp(15rem, 64vw, 19rem);
   }
 
-  .schedule-list {
+  :root[data-stable-viewport-height="short"] .schedule-list {
     --schedule-rail-x: 1.25rem;
     --schedule-dot-size: 1rem;
     gap: 0.85rem;
     padding-bottom: clamp(4.6rem, 18vw, 6rem);
   }
 
-  .schedule-rail {
+  :root[data-stable-viewport-height="short"] .schedule-rail {
     width: calc(var(--schedule-rail-x) * 2);
   }
 
-  .schedule-item,
-  .schedule-item:nth-of-type(even) {
+  :root[data-stable-viewport-height="short"] .schedule-item,
+  :root[data-stable-viewport-height="short"] .schedule-item:nth-of-type(even) {
     grid-template-columns: 2.35rem minmax(0, 1fr);
     row-gap: 0.65rem;
   }
 
-  .schedule-card,
-  .schedule-photo-grid,
-  .schedule-scene,
-  .schedule-item:nth-of-type(even) .schedule-card,
-  .schedule-item:nth-of-type(even) .schedule-photo-grid,
-  .schedule-item:nth-of-type(even) .schedule-scene {
+  :root[data-stable-viewport-height="short"] .schedule-card,
+  :root[data-stable-viewport-height="short"] .schedule-photo-grid,
+  :root[data-stable-viewport-height="short"] .schedule-scene,
+  :root[data-stable-viewport-height="short"] .schedule-item:nth-of-type(even) .schedule-card,
+  :root[data-stable-viewport-height="short"] .schedule-item:nth-of-type(even) .schedule-photo-grid,
+  :root[data-stable-viewport-height="short"] .schedule-item:nth-of-type(even) .schedule-scene {
     grid-column: 2;
   }
 
-  .schedule-photo-grid,
-  .schedule-scene,
-  .schedule-item:nth-of-type(even) .schedule-photo-grid,
-  .schedule-item:nth-of-type(even) .schedule-scene {
+  :root[data-stable-viewport-height="short"] .schedule-photo-grid,
+  :root[data-stable-viewport-height="short"] .schedule-scene,
+  :root[data-stable-viewport-height="short"] .schedule-item:nth-of-type(even) .schedule-photo-grid,
+  :root[data-stable-viewport-height="short"] .schedule-item:nth-of-type(even) .schedule-scene {
     width: min(100%, 12rem);
     justify-self: start;
   }
 
-  .schedule-card {
+  :root[data-stable-viewport-height="short"] .schedule-card {
     gap: 0.32rem;
   }
 
-  .schedule-item time {
+  :root[data-stable-viewport-height="short"] .schedule-item time {
     font-size: clamp(1.28rem, 6vw, 1.65rem);
   }
 
-  .schedule-item h3 {
+  :root[data-stable-viewport-height="short"] .schedule-item h3 {
     font-size: clamp(1.45rem, 7vw, 2rem);
   }
 
-  .story-section .section-heading {
+  :root[data-stable-viewport-height="short"] .story-section .section-heading {
     margin-bottom: 0.75rem;
   }
 
-  .story-stage {
+  :root[data-stable-viewport-height="short"] .story-stage {
     gap: 0.9rem;
   }
 
-  .story-stack {
+  :root[data-stable-viewport-height="short"] .story-stack {
     width: min(100%, 17rem);
     height: 27.6rem;
   }
 
-  .story-card {
+  :root[data-stable-viewport-height="short"] .story-card {
     width: min(100%, 15.9rem);
     gap: 0.34rem;
     padding: 0.42rem 0.42rem 0.68rem;
   }
 
-  .story-card--cover {
+  :root[data-stable-viewport-height="short"] .story-card--cover {
     width: min(100%, 15rem);
   }
 
-  .story-card__copy h3 {
-    font-size: clamp(1.55rem, 6.5svh, 2rem);
+  :root[data-stable-viewport-height="short"] .story-card__copy h3 {
+    font-size: clamp(1.55rem, calc(var(--stable-vh) * 6.5), 2rem);
   }
 
-  .story-card__copy p {
-    font-size: clamp(1.32rem, 4.8svh, 1.56rem);
+  :root[data-stable-viewport-height="short"] .story-card__copy p {
+    font-size: clamp(1.32rem, calc(var(--stable-vh) * 4.8), 1.56rem);
     line-height: 1.14;
   }
 
-  .story-card__copy span {
+  :root[data-stable-viewport-height="short"] .story-card__copy span {
     font-size: 1.08rem;
   }
 
-  .story-controls button,
-  .story-control-spacer {
+  :root[data-stable-viewport-height="short"] .story-controls button,
+  :root[data-stable-viewport-height="short"] .story-control-spacer {
     width: 2.45rem;
     height: 2.45rem;
   }
 
-  .rsvp-form {
+  :root[data-stable-viewport-height="short"] .rsvp-form {
     gap: clamp(1.35rem, 5vw, 1.75rem);
     font-size: clamp(1.28rem, 4.8vw, 1.38rem);
     padding: clamp(1.25rem, 7vw, 1.8rem) clamp(1rem, 5vw, 1.35rem);
   }
 
-  .rsvp-field {
+  :root[data-stable-viewport-height="short"] .rsvp-field {
     gap: 0.78rem;
   }
 
-  .rsvp-form input,
-  .rsvp-form textarea,
-  .rsvp-select__trigger {
+  :root[data-stable-viewport-height="short"] .rsvp-form input,
+  :root[data-stable-viewport-height="short"] .rsvp-form textarea,
+  :root[data-stable-viewport-height="short"] .rsvp-select__trigger {
     min-height: 3.18rem;
     padding: 0.82rem 0.9rem;
   }
 
-  .rsvp-select__menu {
-    max-height: min(15rem, 54svh);
+  :root[data-stable-viewport-height="short"] .rsvp-select__menu {
+    max-height: min(15rem, calc(var(--stable-vh) * 54));
   }
 
-  .image-viewer {
+  :root[data-stable-viewport-height="short"] .image-viewer {
     --image-viewer-padding: 0.75rem;
     padding: 0.75rem;
   }
 
-  .image-viewer img {
+  :root[data-stable-viewport-height="short"] .image-viewer img {
     border-width: 0.3rem;
     border-radius: 8px;
   }
 
-  .puzzle-modal {
+  :root[data-stable-viewport-height="short"] .puzzle-modal {
     --puzzle-modal-padding: 0.65rem;
     align-items: center;
     padding: var(--puzzle-modal-padding);
   }
 
-  .puzzle-closet {
+  :root[data-stable-viewport-height="short"] .puzzle-closet {
     align-items: start;
     padding: max(0.65rem, env(safe-area-inset-top)) 0.65rem max(0.65rem, env(safe-area-inset-bottom));
   }
 
-  .puzzle-modal__panel {
-    --puzzle-board-max-height: max(13rem, min(52svh, calc(100svh - 12.8rem)));
-    max-height: calc(100svh - 1.3rem);
+  :root[data-stable-viewport-height="short"] .puzzle-modal__panel {
+    --puzzle-board-max-height: max(
+      13rem,
+      min(calc(var(--stable-vh) * 52), calc(var(--stable-viewport-height) - 12.8rem))
+    );
+    max-height: calc(var(--stable-viewport-height) - 1.3rem);
     gap: 0.45rem;
     padding: 0.62rem;
   }
 
-  .puzzle-modal__panel--solved {
-    --puzzle-board-max-height: max(9rem, min(36svh, calc(100svh - 19rem)));
+  :root[data-stable-viewport-height="short"] .puzzle-modal__panel--solved {
+    --puzzle-board-max-height: max(
+      9rem,
+      min(calc(var(--stable-vh) * 36), calc(var(--stable-viewport-height) - 19rem))
+    );
   }
 
-  .puzzle-closet__panel {
-    max-height: calc(100svh - 1.3rem);
+  :root[data-stable-viewport-height="short"] .puzzle-closet__panel {
+    max-height: calc(var(--stable-viewport-height) - 1.3rem);
     gap: 0.75rem;
   }
 }
