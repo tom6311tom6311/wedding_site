@@ -215,7 +215,9 @@ export function RsvpSection({ rsvp }: RsvpSectionProps) {
           ? rsvp.statusMessages.updateSuccess
           : rsvp.statusMessages.submitSuccess,
       });
-      window.requestAnimationFrame(() => scrollToPuzzleSection());
+      if (!hasSavedResponse) {
+        window.requestAnimationFrame(() => scrollToPuzzleSection());
+      }
     } catch {
       setStatus({
         kind: "error",
