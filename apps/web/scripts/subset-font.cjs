@@ -1,4 +1,5 @@
 const fs = require("fs");
+const crypto = require("crypto");
 const path = require("path");
 const subsetFont = require("subset-font");
 
@@ -11,6 +12,12 @@ const outputFont = path.join(
   rootDir,
   "apps/web/public/fonts/ChenYuluoyan-2.0-Thin.subset.woff2",
 );
+const fontPublicPath = "/fonts/ChenYuluoyan-2.0-Thin.subset.woff2";
+const fontUrlPattern = /\/fonts\/ChenYuluoyan-2\.0-Thin\.subset\.woff2(?:\?v=[a-f0-9]+)?/g;
+const fontReferenceFiles = [
+  path.join(rootDir, "apps/web/index.html"),
+  path.join(rootDir, "apps/web/src/styles.css"),
+];
 const scanRoots = [
   path.join(rootDir, "apps/web/index.html"),
   path.join(rootDir, "apps/web/src"),
@@ -51,14 +58,25 @@ async function main() {
   const output = await subsetFont(input, text, {
     targetFormat: "woff2",
   });
+  const version = crypto.createHash("sha256").update(output).digest("hex").slice(0, 12);
+  const versionedFontUrl = `${fontPublicPath}?v=${version}`;
 
   fs.writeFileSync(outputFont, output);
+  fontReferenceFiles.forEach((file) => {
+    const current = fs.readFileSync(file, "utf8");
+    const next = current.replace(fontUrlPattern, versionedFontUrl);
+
+    if (next !== current) {
+      fs.writeFileSync(file, next);
+    }
+  });
 
   const beforeKiB = Math.round(input.length / 1024);
   const afterKiB = Math.round(output.length / 1024);
   console.log(
     `Subset font written: ${path.relative(rootDir, outputFont)} (${beforeKiB} KiB -> ${afterKiB} KiB, ${text.length} chars)`,
   );
+  console.log(`Font references updated: ${versionedFontUrl}`);
 }
 
 main().catch((error) => {
