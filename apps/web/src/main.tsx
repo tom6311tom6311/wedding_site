@@ -8,6 +8,8 @@ import "./styles.css";
 
 const HERO_IMAGE_PRELOAD_LIMIT = 1;
 
+setStableViewportHeight();
+
 document.title = weddingContent.metadata.title;
 
 const description = document.querySelector<HTMLMetaElement>(
@@ -40,6 +42,39 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <App />
   </React.StrictMode>,
 );
+
+function setStableViewportHeight() {
+  let lastWidth = window.innerWidth;
+
+  const update = () => {
+    const height = window.visualViewport?.height ?? window.innerHeight;
+
+    document.documentElement.style.setProperty(
+      "--stable-viewport-height",
+      `${Math.round(height)}px`,
+    );
+  };
+
+  const handleResize = () => {
+    if (window.innerWidth === lastWidth) {
+      return;
+    }
+
+    lastWidth = window.innerWidth;
+    update();
+  };
+
+  const handleOrientationChange = () => {
+    window.setTimeout(() => {
+      lastWidth = window.innerWidth;
+      update();
+    }, 250);
+  };
+
+  update();
+  window.addEventListener("resize", handleResize);
+  window.addEventListener("orientationchange", handleOrientationChange);
+}
 
 function preloadHeroImages(hero: typeof weddingContent.hero) {
   const images = hero.images && hero.images.length > 0 ? hero.images : [hero.image];

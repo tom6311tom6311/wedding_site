@@ -14,6 +14,7 @@
   --section-padding-block: clamp(5rem, 8vw, 7.5rem);
   --section-padding-inline: clamp(1.25rem, 5vw, 5rem);
   --hero-card-margin: clamp(0.9rem, 1.6vw, 1.75rem);
+  --stable-viewport-height: 100svh;
   --font-fallback: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
   --font-main: "ChenYu LuoYan", var(--font-fallback);
@@ -66,8 +67,7 @@ a:focus:not(:focus-visible) {
 }
 
 .site-shell {
-  min-height: 100vh;
-  min-height: 100svh;
+  min-height: var(--stable-viewport-height);
   background: var(--page-background);
 }
 
@@ -239,7 +239,7 @@ a:focus:not(:focus-visible) {
 .hero {
   position: relative;
   display: grid;
-  min-height: calc(100svh - var(--hero-card-margin) - var(--hero-card-margin));
+  min-height: calc(var(--stable-viewport-height) - var(--hero-card-margin) - var(--hero-card-margin));
   margin: var(--hero-card-margin);
   overflow: visible;
   border: 1px solid rgba(111, 73, 53, 0.22);
@@ -482,7 +482,7 @@ a:focus:not(:focus-visible) {
 .page-section {
   position: relative;
   display: grid;
-  min-height: 100svh;
+  min-height: var(--stable-viewport-height);
   align-items: center;
   overflow: hidden;
   padding: var(--section-padding-block) var(--section-padding-inline);
@@ -538,6 +538,7 @@ a:focus:not(:focus-visible) {
 }
 
 .section-decor--rsvp-mail {
+  z-index: 4;
   right: clamp(-2.5rem, -4vw, -1rem);
   bottom: clamp(-2.5rem, -4vw, -1rem);
   width: clamp(6.5rem, 11vw, 9.5rem);
@@ -609,7 +610,7 @@ a:focus:not(:focus-visible) {
 }
 
 .intro-section {
-  min-height: 100svh;
+  min-height: var(--stable-viewport-height);
   background: var(--section-background);
 }
 
@@ -705,7 +706,7 @@ a:focus:not(:focus-visible) {
   position: relative;
   z-index: 1;
   display: grid;
-  min-height: calc(100svh - var(--section-padding-block) - var(--section-padding-block));
+  min-height: calc(var(--stable-viewport-height) - var(--section-padding-block) - var(--section-padding-block));
   align-content: center;
   justify-items: center;
   gap: clamp(1rem, 2.5vw, 1.8rem);
@@ -1023,7 +1024,7 @@ a:focus:not(:focus-visible) {
 }
 
 .story-section {
-  min-height: 100svh;
+  min-height: var(--stable-viewport-height);
   overflow: visible;
   padding-block: clamp(2rem, 4.5svh, 3.25rem);
   background: var(--section-background);
@@ -1053,8 +1054,8 @@ a:focus:not(:focus-visible) {
   position: relative;
   z-index: 1;
   display: grid;
-  width: min(100%, 22.4rem, calc((100svh - 10rem) * 0.68));
-  height: min(clamp(27.5rem, 68svh, 36rem), calc(100svh - 9.5rem));
+  width: min(100%, 22.4rem, calc((var(--stable-viewport-height) - 10rem) * 0.68));
+  height: min(clamp(27.5rem, 68svh, 36rem), calc(var(--stable-viewport-height) - 9.5rem));
   place-items: center;
   isolation: isolate;
   perspective: 46rem;
@@ -1068,7 +1069,7 @@ a:focus:not(:focus-visible) {
   left: 50%;
   z-index: 4;
   display: grid;
-  width: min(100%, 20.8rem, calc((100svh - 10rem) * 0.63));
+  width: min(100%, 20.8rem, calc((var(--stable-viewport-height) - 10rem) * 0.63));
   align-items: start;
   justify-items: center;
   gap: clamp(0.5rem, 1.15svh, 0.82rem);
@@ -1116,7 +1117,7 @@ a:focus:not(:focus-visible) {
 }
 
 .story-card--cover {
-  width: min(100%, 18rem, calc((100svh - 9.5rem) * 0.64));
+  width: min(100%, 18rem, calc((var(--stable-viewport-height) - 9.5rem) * 0.64));
   border: 0;
   padding: 0;
   background: transparent;
@@ -2726,8 +2727,7 @@ a:focus:not(:focus-visible) {
 }
 
 .admin-page {
-  min-height: 100vh;
-  min-height: 100svh;
+  min-height: var(--stable-viewport-height);
   padding: clamp(1rem, 3vw, 2rem);
   background: #f6f3ee;
   color: #1f2933;
@@ -3902,7 +3902,7 @@ a:focus:not(:focus-visible) {
   }
 
   .hero {
-    min-height: calc(100svh - var(--hero-card-margin) - var(--hero-card-margin));
+    min-height: calc(var(--stable-viewport-height) - var(--hero-card-margin) - var(--hero-card-margin));
     border-radius: 1.15rem;
   }
 
@@ -4021,11 +4021,11 @@ a:focus:not(:focus-visible) {
   }
 
   .countdown-section {
-    min-height: max(34rem, 100svh);
+    min-height: max(34rem, var(--stable-viewport-height));
   }
 
   .intro-section {
-    min-height: 100svh;
+    min-height: var(--stable-viewport-height);
   }
 
   .details-grid,
@@ -4239,7 +4239,7 @@ a:focus:not(:focus-visible) {
   }
 
   .hero {
-    min-height: max(28rem, calc(100svh - var(--hero-card-margin) - var(--hero-card-margin)));
+    min-height: max(28rem, calc(var(--stable-viewport-height) - var(--hero-card-margin) - var(--hero-card-margin)));
   }
 
   .hero::after {
@@ -4332,7 +4332,7 @@ a:focus:not(:focus-visible) {
   }
 
   .countdown-inner {
-    min-height: max(26rem, calc(100svh - var(--section-padding-block) - var(--section-padding-block)));
+    min-height: max(26rem, calc(var(--stable-viewport-height) - var(--section-padding-block) - var(--section-padding-block)));
   }
 
   .countdown-display {
