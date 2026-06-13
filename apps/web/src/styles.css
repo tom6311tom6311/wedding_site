@@ -3673,6 +3673,7 @@ a:focus:not(:focus-visible) {
 }
 
 .rsvp-field {
+  position: relative;
   display: grid;
   gap: 0.55rem;
   color: #443832;
@@ -3681,6 +3682,10 @@ a:focus:not(:focus-visible) {
 
 .rsvp-field:focus-within {
   z-index: 3;
+}
+
+.rsvp-field:has(.rsvp-select--open) {
+  z-index: 200;
 }
 
 .rsvp-field__label {
