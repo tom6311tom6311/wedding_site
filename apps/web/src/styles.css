@@ -1551,8 +1551,6 @@ a:focus:not(:focus-visible) {
 .schedule-list {
   --schedule-rail-x: clamp(1.8rem, 4.25vw, 3.55rem);
   --schedule-dot-size: clamp(1.25rem, 2.2vw, 1.6rem);
-  --schedule-ending-offset: clamp(5.25rem, 12vw, 9rem);
-  --schedule-ending-center-from-bottom: clamp(1.35rem, 3.4vw, 2.45rem);
   position: relative;
   display: grid;
   gap: clamp(1rem, 3vw, 1.8rem);
@@ -1565,7 +1563,7 @@ a:focus:not(:focus-visible) {
   left: 0;
   z-index: 0;
   width: calc(var(--schedule-rail-x) * 2);
-  height: calc(100% - var(--schedule-ending-center-from-bottom));
+  height: 100%;
   overflow: visible;
   pointer-events: none;
 }
@@ -1576,7 +1574,7 @@ a:focus:not(:focus-visible) {
   stroke: #2d2722;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 14;
+  stroke-width: 5;
 }
 
 .schedule-item {
@@ -1589,14 +1587,13 @@ a:focus:not(:focus-visible) {
   grid-template-columns: clamp(4.5rem, 9vw, 7rem) minmax(13rem, 1fr) minmax(9rem, 0.8fr);
 }
 
-.schedule-item::before,
-.schedule-ending::before {
+.schedule-item::before {
   position: absolute;
   left: var(--schedule-rail-x);
   z-index: 1;
   width: var(--schedule-dot-size);
   height: var(--schedule-dot-size);
-  border: clamp(0.25rem, 0.55vw, 0.38rem) solid #fffaf5;
+  border: 0;
   border-radius: 999px;
   background: #2d2722;
   box-shadow: 0 0.35rem 0.75rem rgba(55, 39, 30, 0.2);
@@ -1791,22 +1788,6 @@ a:focus:not(:focus-visible) {
     radial-gradient(ellipse at 18% 100%, rgba(70, 129, 82, 0.72) 0 0.18rem, transparent 0.22rem),
     linear-gradient(69deg, transparent 45%, rgba(70, 129, 82, 0.72) 46% 52%, transparent 53%),
     linear-gradient(112deg, transparent 44%, rgba(70, 129, 82, 0.72) 45% 52%, transparent 53%);
-}
-
-.schedule-ending {
-  position: relative;
-  z-index: 3;
-  margin: clamp(0.25rem, 2vw, 1.2rem) 0 0 var(--schedule-ending-offset);
-  color: #2d2722;
-  font-family: var(--font-main);
-  font-size: clamp(2rem, 5vw, 3.4rem);
-  font-weight: 850;
-  line-height: 1;
-}
-
-.schedule-ending::before {
-  left: calc(var(--schedule-rail-x) - var(--schedule-ending-offset));
-  top: 50%;
 }
 
 .image-viewer {
@@ -4181,9 +4162,6 @@ a:focus:not(:focus-visible) {
     border-radius: 0.65rem;
   }
 
-  .schedule-ending {
-    --schedule-ending-offset: 4rem;
-  }
 }
 
 @media (max-width: 560px) {
@@ -4435,11 +4413,6 @@ a:focus:not(:focus-visible) {
 
   .schedule-item h3 {
     font-size: clamp(1.45rem, 7vw, 2rem);
-  }
-
-  .schedule-ending {
-    --schedule-ending-offset: 2.85rem;
-    font-size: clamp(1.7rem, 9vw, 2.45rem);
   }
 
   .story-section .section-heading {

@@ -102,7 +102,17 @@ export function ScheduleSection({ schedule }: ScheduleSectionProps) {
               )}
             </article>
           ))}
-          <p className="schedule-ending">{schedule.endingLabel}</p>
+          {schedule.endingBlock ? (
+            <article className="schedule-item schedule-item--ending">
+              <div className="schedule-card">
+                {schedule.endingBlock.time ? <time>{schedule.endingBlock.time}</time> : null}
+                <div>
+                  <h3>{schedule.endingBlock.title}</h3>
+                  {schedule.endingBlock.body ? <p>{schedule.endingBlock.body}</p> : null}
+                </div>
+              </div>
+            </article>
+          ) : null}
         </div>
       </div>
       {selectedImage ? (

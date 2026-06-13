@@ -284,7 +284,9 @@
   "schedule": {
     "eyebrow": "Schedule",
     "title": "Wedding day flow",
-    "endingLabel": "Happy ending",
+    "endingBlock": {
+      "title": "Happy ending"
+    },
     "imageOpenAriaLabel": "View larger image: {alt}",
     "imageCloseAriaLabel": "Close image",
     "events": [

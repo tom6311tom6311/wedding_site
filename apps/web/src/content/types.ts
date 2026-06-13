@@ -230,7 +230,11 @@ export type WeddingContent = {
   schedule: {
     eyebrow: string;
     title: string;
-    endingLabel: string;
+    endingBlock?: {
+      time?: string;
+      title: string;
+      body?: string;
+    };
     imageOpenAriaLabel: string;
     imageCloseAriaLabel: string;
     events: Array<{
