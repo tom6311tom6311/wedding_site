@@ -2726,6 +2726,11 @@ a:focus:not(:focus-visible) {
     0 0 0 4px rgba(138, 88, 70, 0.16);
 }
 
+.puzzle-closet__load-more {
+  min-height: 1px;
+  grid-column: 1 / -1;
+}
+
 .puzzle-closet__photo span {
   position: absolute;
   right: 0.45rem;

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties, FormEvent } from "react";
 import type { WeddingContent } from "../content/types";
 
@@ -56,6 +56,8 @@ const RSVP_BROWSER_TOKEN_STORAGE_KEY = "wedding-site:rsvp-token";
 const RSVP_TOKEN_UPDATED_EVENT = "wedding-site:rsvp-token-updated";
 const RSVP_RECORD_RESET_EVENT = "wedding-site:rsvp-record-reset";
 const PUZZLE_STATE_STORAGE_KEY_PREFIX = "wedding-site:puzzle-state:v3";
+const CLOSET_INITIAL_PHOTO_COUNT = 8;
+const CLOSET_PHOTO_BATCH_SIZE = 8;
 const DEFAULT_PUZZLE_DIFFICULTY_TIERS: PuzzleDifficultyTier[] = [
   { startsAt: 1, rows: 2, columns: 3 },
   { startsAt: 11, rows: 3, columns: 4 },
@@ -83,11 +85,19 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
   const [isIdentifying, setIsIdentifying] = useState(false);
   const [isLookupOpen, setIsLookupOpen] = useState(false);
   const [isPuzzleHelpOpen, setIsPuzzleHelpOpen] = useState(false);
+  const [visibleClosetPhotoCount, setVisibleClosetPhotoCount] =
+    useState(CLOSET_INITIAL_PHOTO_COUNT);
+  const closetLoadMoreRef = useRef<HTMLDivElement | null>(null);
   const unlockedSet = useMemo(() => new Set(unlockedPhotoIds), [unlockedPhotoIds]);
   const unlockedPhotos = useMemo(
     () => puzzle.photos.filter((photo) => unlockedSet.has(photo.id)),
     [puzzle.photos, unlockedSet],
   );
+  const visibleClosetPhotos = useMemo(
+    () => unlockedPhotos.slice(0, visibleClosetPhotoCount),
+    [unlockedPhotos, visibleClosetPhotoCount],
+  );
+  const hasMoreClosetPhotos = visibleClosetPhotoCount < unlockedPhotos.length;
   const nextPhoto = puzzle.photos.find((photo) => !unlockedSet.has(photo.id)) ?? null;
   const hasSolvedAll = nextPhoto === null && puzzle.photos.length > 0;
   const nextModalPhoto =
@@ -179,6 +189,46 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
     unlockedPhotoIds.forEach((photoId) => clearStoredPuzzleState(photoId));
   }, [unlockedPhotoIds]);
 
+  useEffect(() => {
+    if (!isClosetOpen) {
+      return;
+    }
+
+    setVisibleClosetPhotoCount(Math.min(CLOSET_INITIAL_PHOTO_COUNT, unlockedPhotos.length));
+  }, [isClosetOpen, unlockedPhotos.length]);
+
+  useEffect(() => {
+    if (!isClosetOpen || !hasMoreClosetPhotos) {
+      return;
+    }
+
+    const loadMoreTrigger = closetLoadMoreRef.current;
+
+    if (!loadMoreTrigger) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) {
+          return;
+        }
+
+        setVisibleClosetPhotoCount((current) =>
+          Math.min(current + CLOSET_PHOTO_BATCH_SIZE, unlockedPhotos.length),
+        );
+      },
+      {
+        root: loadMoreTrigger.closest(".puzzle-closet__panel"),
+        rootMargin: "360px 0px",
+      },
+    );
+
+    observer.observe(loadMoreTrigger);
+
+    return () => observer.disconnect();
+  }, [hasMoreClosetPhotos, isClosetOpen, unlockedPhotos.length]);
+
   function resetPuzzleSession() {
     setGuest(null);
     setUnlockedPhotoIds([]);
@@ -195,6 +245,7 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
     setIsIdentifying(false);
     setIsLookupOpen(false);
     setIsPuzzleHelpOpen(false);
+    setVisibleClosetPhotoCount(CLOSET_INITIAL_PHOTO_COUNT);
   }
 
   function startPuzzle(photo: PuzzlePhoto, puzzleNumber = unlockedPhotoIds.length + 1) {
@@ -703,7 +754,7 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
             </div>
             {unlockedPhotos.length > 0 ? (
               <div className="puzzle-closet__grid">
-                {unlockedPhotos.map((photo) => (
+                {visibleClosetPhotos.map((photo) => (
                   <button
                     className="puzzle-closet__photo"
                     key={photo.id}
@@ -716,11 +767,20 @@ export function PuzzleSection({ puzzle }: PuzzleSectionProps) {
                     <img
                       src={photo.src}
                       alt={photo.alt}
+                      loading="lazy"
+                      decoding="async"
                       onLoad={(event) => rememberPhotoAspect(photo, event.currentTarget)}
                     />
                     <span>{photo.title}</span>
                   </button>
                 ))}
+                {hasMoreClosetPhotos ? (
+                  <div
+                    className="puzzle-closet__load-more"
+                    ref={closetLoadMoreRef}
+                    aria-hidden="true"
+                  />
+                ) : null}
               </div>
             ) : (
               <p className="puzzle-closet__empty">{labels.closetEmpty}</p>
